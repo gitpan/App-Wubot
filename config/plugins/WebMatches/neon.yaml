@@ -1,0 +1,25 @@
+---
+enable: 1
+delay: 1d
+url: http://www.webdav.org/neon/
+regexp: '\"(neon\-[\d\.]+\.tar\.gz)\"'
+
+react:
+
+  - name: matched
+    condition: match is true
+    rules:
+
+
+      - name: field
+        plugin: SetField
+        config:
+          field: sticky
+          value: 1
+
+      - name: subject
+        plugin: Template
+        config:
+          template: 'New neon release: {$match}'
+          target_field: subject
+

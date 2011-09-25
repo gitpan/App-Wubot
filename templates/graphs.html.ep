@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>Graphs</title>
+    <meta http-equiv="refresh" content="300">
+    <%= include 'css' %>
+  </head>
+  <body bgcolor='black'>
+
+    <%= include 'nav' %>
+
+  <font size="-1" color="#FF00FF">
+    |
+    <% for my $key ( @$nav ) { %>
+      <a href='?key=<%= $key %>'><%= $key %></a> |
+    <% } %>
+  </font>
+
+    <hr>
+
+
+    <% for my $graph ( @$images ) { %>
+      <img src="<%= $graph %>">
+    <% } %>
+    
+  </body>
+
+</html>
+
