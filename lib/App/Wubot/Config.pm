@@ -1,7 +1,7 @@
 package App::Wubot::Config;
 use Moose;
 
-our $VERSION = '0.3.5'; # VERSION
+our $VERSION = '0.3.6'; # VERSION
 
 use Sys::Hostname qw();
 use YAML;
@@ -155,7 +155,7 @@ App::Wubot::Config - read wubot plugin configuration
 
 =head1 VERSION
 
-version 0.3.5
+version 0.3.6
 
 =head1 SYNOPSIS
 

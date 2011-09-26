@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::SafariBookmarks;
 use Moose;
 
-our $VERSION = '0.3.5'; # VERSION
+our $VERSION = '0.3.6'; # VERSION
 
 use LWP::Simple;
 use XML::Simple;
@@ -127,7 +127,7 @@ App::Wubot::Plugin::SafariBookmarks - monitor for new safari bookmarks
 
 =head1 VERSION
 
-version 0.3.5
+version 0.3.6
 
 =head1 DESCRIPTION
 

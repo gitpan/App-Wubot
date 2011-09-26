@@ -1,7 +1,7 @@
 package App::Wubot::SQLite;
 use Moose;
 
-our $VERSION = '0.3.5'; # VERSION
+our $VERSION = '0.3.6'; # VERSION
 
 use Capture::Tiny;
 use DBI;
@@ -20,7 +20,7 @@ App::Wubot::SQLite - the wubot library for working with SQLite
 
 =head1 VERSION
 
-version 0.3.5
+version 0.3.6
 
 =head1 SYNOPSIS
 

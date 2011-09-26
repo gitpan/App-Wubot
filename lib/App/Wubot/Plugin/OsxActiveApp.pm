@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::OsxActiveApp;
 use Moose;
 
-our $VERSION = '0.3.5'; # VERSION
+our $VERSION = '0.3.6'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -52,7 +52,7 @@ App::Wubot::Plugin::OsxActiveApp - monitor current active application in OS X
 
 =head1 VERSION
 
-version 0.3.5
+version 0.3.6
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,7 @@
 package App::Wubot::Check;
 use Moose;
 
-our $VERSION = '0.3.5'; # VERSION
+our $VERSION = '0.3.6'; # VERSION
 
 use Benchmark;
 use YAML;
@@ -18,7 +18,7 @@ App::Wubot::Check - perform checks for an instance of a monitor
 
 =head1 VERSION
 
-version 0.3.5
+version 0.3.6
 
 =head1 SYNOPSIS
 
@@ -265,11 +265,6 @@ sub _react_results {
     unless ( ref $react eq "HASH" ) {
         $self->logger->error( "React results called without a hash ref: ", YAML::Dump $react );
         return;
-    }
-
-    # push any configured 'tags' along with the message
-    if ( $config && $config->{tags} ) {
-        $react->{tags} = $config->{tags};
     }
 
     # use our class name for the 'plugin' field

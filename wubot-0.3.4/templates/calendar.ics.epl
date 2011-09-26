@@ -1,3 +1,0 @@
-% my $self = shift;
-% $self->res->headers->content_type('text/calendar');
-<%= $self->stash('calendar') %>

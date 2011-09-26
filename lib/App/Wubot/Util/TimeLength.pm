@@ -1,7 +1,7 @@
 package App::Wubot::Util::TimeLength;
 use Moose;
 
-our $VERSION = '0.3.5'; # VERSION
+our $VERSION = '0.3.6'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -12,7 +12,7 @@ App::Wubot::Util::TimeLength - utilities for dealing with time durations
 
 =head1 VERSION
 
-version 0.3.5
+version 0.3.6
 
 =head1 SYNOPSIS
 

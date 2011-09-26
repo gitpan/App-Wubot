@@ -1,7 +1,7 @@
 package App::Wubot::LocalMessageStore;
 use Moose;
 
-our $VERSION = '0.3.5'; # VERSION
+our $VERSION = '0.3.6'; # VERSION
 
 use Digest::MD5 qw( md5_hex );
 use File::Path;
@@ -19,7 +19,7 @@ App::Wubot::LocalMessageStore - add or remove messages from a local wubot SQLite
 
 =head1 VERSION
 
-version 0.3.5
+version 0.3.6
 
 =head1 SYNOPSIS
 

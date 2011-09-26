@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::User;
 use Moose;
 
-our $VERSION = '0.3.5'; # VERSION
+our $VERSION = '0.3.6'; # VERSION
 
 # todo
 #  - App::Wubot::Util::User
@@ -222,7 +222,7 @@ App::Wubot::Reactor::User - try to identify user from the 'username' field
 
 =head1 VERSION
 
-version 0.3.5
+version 0.3.6
 
 =head1 SYNOPSIS
 
