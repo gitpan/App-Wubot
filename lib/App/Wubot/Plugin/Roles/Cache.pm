@@ -1,9 +1,9 @@
 package App::Wubot::Plugin::Roles::Cache;
 use Moose::Role;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
-use YAML;
+use YAML::XS;
 
 use App::Wubot::Logger;
 
@@ -13,7 +13,7 @@ App::Wubot::Plugin::Roles::Cache - role for plugins that need to cache data betw
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 
@@ -116,7 +116,7 @@ sub read_cache {
     my $yaml;
 
     eval {                      # try
-        $yaml = YAML::LoadFile( $self->cache_file );
+        $yaml = YAML::XS::LoadFile( $self->cache_file );
         1;
     } or do {                   # catch
         my $error = $@;
@@ -163,7 +163,7 @@ sub write_cache {
     $self->cache_data( $cache );
 
     $self->logger->debug( "Writing cache file: $tempfile" );
-    YAML::DumpFile( $tempfile, $cache );
+    YAML::XS::DumpFile( $tempfile, $cache );
 
     my $cache_file = $self->cache_file;
 

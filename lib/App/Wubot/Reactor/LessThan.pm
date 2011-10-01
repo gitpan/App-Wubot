@@ -1,9 +1,7 @@
 package App::Wubot::Reactor::LessThan;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
-
-use YAML;
+our $VERSION = '0.3.7'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -48,7 +46,7 @@ App::Wubot::Reactor::LessThan - set keys and values if the value of a field is l
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::SQLite;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -65,7 +65,7 @@ App::Wubot::Plugin::SQLite - monitor results of SQLite queries
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1
 

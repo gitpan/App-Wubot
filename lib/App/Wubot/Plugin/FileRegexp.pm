@@ -1,7 +1,9 @@
 package App::Wubot::Plugin::FileRegexp;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
+
+use YAML::XS;
 
 use App::Wubot::Logger;
 use App::Wubot::Util::Tail;
@@ -53,7 +55,7 @@ sub init {
 
     $self->tail->callback( $callback );
 
-    $self->tail->reset_callback( sub { print YAML::Dump @_ } );
+    $self->tail->reset_callback( sub { print YAML::XS::Dump @_ } );
 
     if ( $inputs->{cache}->{position} ) {
         $self->tail->position( $inputs->{cache}->{position} );
@@ -90,7 +92,7 @@ App::Wubot::Plugin::FileRegexp - monitor number of lines matching regular expres
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

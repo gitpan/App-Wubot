@@ -1,12 +1,11 @@
 package App::Wubot::Reactor::IRC;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use AnyEvent;
 use AnyEvent::IRC::Client;
 use POSIX qw(strftime);
-use YAML;
 
 use App::Wubot::Logger;
 
@@ -129,7 +128,7 @@ App::Wubot::Reactor::IRC - public and private IRC notifications
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

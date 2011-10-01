@@ -2,15 +2,15 @@ package App::Wubot::Web::Graphs;
 use strict;
 use warnings;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use Mojo::Base 'Mojolicious::Controller';
 
-use YAML;
+use YAML::XS;
 
 my $config_file = join( "/", $ENV{HOME}, "wubot", "config", "webui.yaml" );
 
-my $graphs = YAML::LoadFile( $config_file )->{graphs};
+my $graphs = YAML::XS::LoadFile( $config_file )->{graphs};
 
 sub graphs {
     my $self = shift;
@@ -47,7 +47,7 @@ App::Wubot::Web::Graphs - web interface for wubot graphs
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 CONFIGURATION
 

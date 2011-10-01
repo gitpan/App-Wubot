@@ -1,9 +1,7 @@
 package App::Wubot::Reactor::CopyField;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
-
-use YAML;
+our $VERSION = '0.3.7'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -52,7 +50,7 @@ App::Wubot::Reactor::CopyField - copy the value from one field to another field
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

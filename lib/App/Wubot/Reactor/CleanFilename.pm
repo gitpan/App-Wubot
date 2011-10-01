@@ -1,7 +1,9 @@
 package App::Wubot::Reactor::CleanFilename;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
+
+use YAML::XS;
 
 use App::Wubot::Logger;
 
@@ -17,7 +19,7 @@ sub react {
     my ( $self, $message, $config ) = @_;
 
     unless ( $config->{field} ) {
-        $self->logger->error( "ERROR: CleanFilename: field not defined in config", YAML::Dump $config );
+        $self->logger->error( "ERROR: CleanFilename: field not defined in config", YAML::XS::Dump $config );
         return $message;
     }
 
@@ -65,7 +67,7 @@ App::Wubot::Reactor::CleanFilename - build a clean filename or directory name fr
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

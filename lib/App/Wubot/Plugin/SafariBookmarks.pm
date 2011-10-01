@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::SafariBookmarks;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use LWP::Simple;
 use XML::Simple;
@@ -33,10 +33,10 @@ sub check {
         unlink $tmpfile;
     }
 
-    print "Copying $file to $tmpfile\n";
+    $self->logger->debug( "Copying $file to $tmpfile" );
     system( "cp", $file, $tmpfile );
 
-    print "Converting to xml...\n";
+    $self->logger->debug( "Converting to xml..." );
     system( "plutil", "-convert", "xml1", $tmpfile );
 
 
@@ -127,7 +127,7 @@ App::Wubot::Plugin::SafariBookmarks - monitor for new safari bookmarks
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

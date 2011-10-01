@@ -1,9 +1,9 @@
 package App::Wubot::Reactor::WriteFile;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
-use YAML;
+use YAML::XS;
 
 use App::Wubot::Logger;
 
@@ -26,7 +26,7 @@ sub react {
         $contents = $message->{ $config->{source_field} };
     }
     else {
-        $contents = YAML::Dump $message;
+        $contents = YAML::XS::Dump $message;
     }
 
     my $path;
@@ -65,7 +65,7 @@ App::Wubot::Reactor::WriteFile - write data from a message to an external file
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

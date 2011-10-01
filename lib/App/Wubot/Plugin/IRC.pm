@@ -1,11 +1,10 @@
 package App::Wubot::Plugin::IRC;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use AnyEvent;
 use AnyEvent::IRC::Client;
-use YAML;
 
 use App::Wubot::Logger;
 
@@ -74,7 +73,7 @@ sub check {
 
                                                $channel =~ s|^\#||;
 
-                                               $self->reactor->( { subject  => "$user: $channel: $text",
+                                               $self->reactor->( { subject  => "$channel: $text",
                                                                    text     => $text,
                                                                    channel  => $channel,
                                                                    message  => $text,
@@ -91,7 +90,7 @@ sub check {
                                                my $user = $ircmsg->{prefix};
                                                $user =~ s|\!.*||;
 
-                                               $self->reactor->( { subject  => "$user: private: $text",
+                                               $self->reactor->( { subject  => "private: $text",
                                                                    text     => $text,
                                                                    message  => $text,
                                                                    username => $user,
@@ -152,7 +151,6 @@ sub check {
                                                $channel =~ s|^\#||;
 
                                                my $subject = "topic: $channel [[ $topic ]]";
-                                               if ( $who ) { $subject .= " ($who)"; }
 
                                                $self->reactor->( { subject  => $subject,
                                                                    username => $who,
@@ -193,7 +191,7 @@ App::Wubot::Plugin::IRC - monitor IRC channels
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

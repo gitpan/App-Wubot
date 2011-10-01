@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Console;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use POSIX qw(strftime);
 use Term::ANSIColor;
@@ -40,6 +40,10 @@ sub react {
     if ( $message->{title} && $message->{title} ne $message->{subject} ) {
         my $title   = $message->{title};
         $subject = "$title => $subject";
+    }
+
+    if ( $message->{username} ) {
+        $subject = "$message->{username}: $subject";
     }
 
     if ( $message->{key} ) {
@@ -86,7 +90,7 @@ App::Wubot::Reactor::Console - display a notification to stdout
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

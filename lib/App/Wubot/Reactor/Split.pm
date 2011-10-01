@@ -1,9 +1,7 @@
 package App::Wubot::Reactor::Split;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
-
-use YAML;
+our $VERSION = '0.3.7'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -33,7 +31,7 @@ App::Wubot::Reactor::Split - split a CSV field on a message out into multiple ot
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

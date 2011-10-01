@@ -1,9 +1,7 @@
 package App::Wubot::Reactor::GreaterThan;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
-
-use YAML;
+our $VERSION = '0.3.7'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -26,7 +24,7 @@ sub react {
 
         for my $key ( keys %{ $config->{set} } ) {
 
-            $self->logger->info( "setting field $key to $config->{set}->{$key}" );
+            $self->logger->debug( "setting field $key to $config->{set}->{$key}" );
             $message->{ $key } = $config->{set}->{$key};
 
         }
@@ -49,7 +47,7 @@ App::Wubot::Reactor::GreaterThan - set keys and values if the value of a field e
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

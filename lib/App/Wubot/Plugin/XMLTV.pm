@@ -1,10 +1,9 @@
 package App::Wubot::Plugin::XMLTV;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use Date::Manip;
-use YAML;
 
 use App::Wubot::Logger;
 use App::Wubot::SQLite;
@@ -64,7 +63,7 @@ sub check {
         $self->logger->warn( "Downloading and parsing XMLTV Data" );
 
         my $tv = App::Wubot::Util::XMLTV->new();
-        $tv->fetch_process_data( $xmlfile );
+        $count = $tv->fetch_process_data( $xmlfile );
 
         $self->logger->warn( "Finished parsing XMLTV Data" );
 
@@ -92,7 +91,7 @@ App::Wubot::Plugin::XMLTV - fetch data from XMLTV and store in the wubot tv db
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

@@ -1,9 +1,9 @@
 package App::Wubot::Reactor::SetField;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
-use YAML;
+use YAML::XS;
 
 use App::Wubot::Logger;
 
@@ -39,7 +39,7 @@ sub react {
 
     }
     else {
-        $self->logger->warn( "ERROR: No 'field' or 'set' in SetField config: ", YAML::Dump $config );
+        $self->logger->warn( "ERROR: No 'field' or 'set' in SetField config: ", YAML::XS::Dump $config );
     }
 
 
@@ -59,7 +59,7 @@ App::Wubot::Reactor::SetField - set one or more fields on the message to a confi
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

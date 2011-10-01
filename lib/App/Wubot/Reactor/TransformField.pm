@@ -1,9 +1,7 @@
 package App::Wubot::Reactor::TransformField;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
-
-use YAML;
+our $VERSION = '0.3.7'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -44,7 +42,7 @@ App::Wubot::Reactor::TransformField - use a regexps to transform the data in a f
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::OsxVolume;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -48,11 +48,11 @@ App::Wubot::Plugin::OsxVolume - monitor OS X volume
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 
-  ~/wubot/config/plugins/OsxVolume/navi.yaml.navi
+  ~/wubot/config/plugins/OsxVolume/navi.yaml
 
   ---
   min_volume: 26

@@ -1,10 +1,9 @@
 package App::Wubot::Reactor::Growl;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use POSIX qw(strftime);
-use YAML;
 
 my $growl_enabled = 1;
 eval "use Growl::Tiny";  ## no critic (ProhibitStringyEval)
@@ -96,7 +95,7 @@ App::Wubot::Reactor::Growl - display a growl notification on OS X using Growl::T
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

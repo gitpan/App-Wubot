@@ -2,15 +2,15 @@ package App::Wubot::Web;
 use strict;
 use warnings;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use Mojo::Base 'Mojolicious';
 
-use YAML;
+use YAML::XS;
 
 my $config_file = join( "/", $ENV{HOME}, "wubot", "config", "webui.yaml" );
 
-my $config = YAML::LoadFile( $config_file );
+my $config = YAML::XS::LoadFile( $config_file );
 
 # This method will run once at server start
 sub startup {
@@ -44,7 +44,7 @@ App::Wubot::Web - Mojolicious web interface for wubot
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

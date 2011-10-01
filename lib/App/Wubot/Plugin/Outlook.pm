@@ -1,13 +1,12 @@
 package App::Wubot::Plugin::Outlook;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use Date::Manip;
 use Encode;
 use HTML::TableExtract;
 use LWP::UserAgent;
-use YAML;
 
 use App::Wubot::Logger;
 
@@ -108,7 +107,7 @@ App::Wubot::Plugin::Outlook - monitor number of emails in the inbox using Outloo
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

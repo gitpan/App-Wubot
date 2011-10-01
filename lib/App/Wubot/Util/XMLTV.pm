@@ -1,7 +1,7 @@
 package App::Wubot::Util::XMLTV;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use Benchmark;
 use Capture::Tiny qw/capture/;
@@ -9,7 +9,6 @@ use Date::Manip;
 use LWP::Simple;
 use POSIX qw(strftime);
 use XML::Twig;
-use YAML;
 
 use App::Wubot::Logger;
 use App::Wubot::SQLite;
@@ -22,7 +21,7 @@ App::Wubot::Util::XMLTV - utility method for dealing with XMLTV data
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 
@@ -115,38 +114,41 @@ sub fetch_process_data {
     $self->db->delete( "schedule", { start => { "<" => $oldest_date } }, "tv" );
     $self->logger->info( "Deleting schedule data complete" );
 
+    my $count = 0;
+
     for my $day ( 0 .. 14 ) {
-        print "Fetching data for day $day\n";
+        $self->logger->info( "Fetching data for day $day" );
 
         my $command = "/usr/local/bin/tv_grab_na_dd -dd-data $tmpfile --days 1 --offset $day --download-only";
         #print "COMMAND: $command\n";
         system( $command );
 
-        print "Processing data\n";
+        $self->logger->info( "Processing data" );
 
         my $start = new Benchmark;
 
         my ($stdout, $stderr) = capture {
-            $self->process_data( $tmpfile );
+            $count += $self->process_data( $tmpfile );
         };
 
         for my $line ( split /\n/, $stderr ) {
             next if $line =~ m|are not unique|;
             next if $line =~ m|constraint failed|;
 
-            print "> $line\n";
+            $self->logger->warn( "> $line" );
         }
 
-        print $stdout;
+        $self->logger->info( $stdout );
 
         my $end = new Benchmark;
         my $diff = timediff( $end, $start );
-        print "Time taken was ", timestr( $diff, 'all' ), " seconds";
+        $self->logger->info( "Time taken was ", timestr( $diff, 'all' ), " seconds" );
 
     }
 
-    print "DONE PROCESSING XMLTV DATA\n";
+    $self->logger->info( "DONE PROCESSING XMLTV DATA" );
 
+    return $count;
 }
 
 =item $obj->process_data();
@@ -159,6 +161,7 @@ sub process_data {
     my ( $self, $xmlfile ) = @_;
 
     my $now = time;
+    my $count = 0;
 
     my $twig=XML::Twig->new(
         twig_handlers => 
@@ -179,6 +182,8 @@ sub process_data {
                                      "tv"
                                  );
 
+                  $count++;
+
               },
               lineup      => sub {
 
@@ -196,6 +201,8 @@ sub process_data {
                                          $entry,
                                          "tv"
                                      );
+
+                      $count++;
                   }
 
               },
@@ -221,6 +228,7 @@ sub process_data {
                                      "tv"
                                  );
 
+                  $count++;
 
               },
               program     => sub {
@@ -254,6 +262,7 @@ sub process_data {
                                                "tv"
                                            );
 
+                  $count++;
 
               },
               crew         => sub {
@@ -272,6 +281,7 @@ sub process_data {
                                          "tv"
                                      );
 
+                      $count++;
                   }
               },
               programGenre  => sub {
@@ -288,6 +298,8 @@ sub process_data {
                                          $entry,
                                          "tv"
                                      );
+
+                      $count++;
                   }
 
               },
@@ -296,6 +308,8 @@ sub process_data {
     );
 
     $twig->parsefile( $xmlfile );
+
+    return $count;
 
 }
 

@@ -1,9 +1,9 @@
 package App::Wubot::Reactor::Dumper;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
-use YAML;
+use YAML::XS;
 
 use App::Wubot::Logger;
 
@@ -20,10 +20,10 @@ sub react {
     my ( $self, $message, $config ) = @_;
 
     if ( $config->{field} ) {
-        print YAML::Dump $message->{ $config->{field} };
+        print YAML::XS::Dump $message->{ $config->{field} };
     }
     else {
-        print YAML::Dump $message;
+        print YAML::XS::Dump $message;
     }
 
     return $message;
@@ -43,7 +43,7 @@ App::Wubot::Reactor::Dumper - display the contents of a field or an entire messa
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

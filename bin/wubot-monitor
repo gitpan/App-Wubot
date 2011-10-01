@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl -w
 use strict;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use AnyEvent::Watchdog autorestart => 1, heartbeat => 300;
 
@@ -40,6 +40,8 @@ our $plugin_objs;
 my $schedule;
 
 my $config  = App::Wubot::Config->new( { root => $config_directory } );
+
+my $reactor = App::Wubot::Reactor->new();
 
 my $timelength = App::Wubot::Util::TimeLength->new();
 
@@ -81,6 +83,7 @@ my $timer = AnyEvent->timer( after    => 1,
                                      next if $time > $now;
 
                                      for my $plugin ( @{ $schedule->{$time} } ) {
+
                                          my $plugin_config = $config->get_plugin_config( $plugin );
 
                                          my $results = $plugin_objs->{$plugin}->check( $plugin_config );
@@ -143,6 +146,7 @@ sub create_plugin_instance {
                                     cache_file    => "$cache_directory/$plugin.yaml",
                                     key           => $plugin,
                                     reactor_queue => $message_store,
+                                    wubot_reactor => $reactor,
                                 } );
 
     $plugin_objs->{ $plugin }->init( $plugin_config );
@@ -189,7 +193,7 @@ __END__
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

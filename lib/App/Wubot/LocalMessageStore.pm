@@ -1,7 +1,7 @@
 package App::Wubot::LocalMessageStore;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use Digest::MD5 qw( md5_hex );
 use File::Path;
@@ -19,7 +19,7 @@ App::Wubot::LocalMessageStore - add or remove messages from a local wubot SQLite
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 
@@ -120,6 +120,10 @@ significantly degrade performance.
 
 sub initialize_db {
     my ( $self, $directory ) = @_;
+
+    unless ( $directory ) {
+        $self->logger->logconfess( "ERROR: initialize_directory called without directory" );
+    }
 
     unless ( -d $directory ) {
         mkpath( $directory );
@@ -390,8 +394,7 @@ __END__
 
 =head1 YAML::XS
 
-Everywhere else, the wubot libraries use YAML.  This module uses
-YAML::XS, as I have experienced issues serializing and/or
-deserializing messages with every other perl YAML library I have
-tried.  YAML::XS has been extremely reliable; I have yet to encounter
-a message that it can not handle.
+This library requires YAML::XS, as I have experienced issues
+serializing and/or deserializing messages with every other perl YAML
+library I have tried.  YAML::XS has been extremely reliable; I have
+yet to encounter a message that it can not handle.

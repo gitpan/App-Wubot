@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::User;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 # todo
 #  - App::Wubot::Util::User
@@ -9,7 +9,7 @@ our $VERSION = '0.3.6'; # VERSION
 #  - other classes could use other contact back-ends, e.g. emacs contacts
 #  - role for interface, with method to check if file changed
 
-use YAML;
+use YAML::XS;
 
 use App::Wubot::Logger;
 use App::Wubot::Reactor;
@@ -186,7 +186,7 @@ sub _read_userfile {
 
     my $userdata;
     eval {                          # try
-        $userdata = YAML::LoadFile( $path );
+        $userdata = YAML::XS::LoadFile( $path );
         1;
     } or do {                       # catch
         $self->logger->error( "Unable to load yaml file: $path: $@" );
@@ -222,7 +222,7 @@ App::Wubot::Reactor::User - try to identify user from the 'username' field
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

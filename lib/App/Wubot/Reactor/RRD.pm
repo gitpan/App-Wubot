@@ -1,14 +1,14 @@
 package App::Wubot::Reactor::RRD;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use Capture::Tiny;
 use File::Path;
 use POSIX qw(strftime);
 use RRD::Simple;
 use RRDs;
-use YAML;
+use YAML::XS;
 
 use App::Wubot::Logger;
 
@@ -92,7 +92,7 @@ sub react {
     }
 
     if ( $config->{debug} ) {
-        print YAML::Dump { key => $key, rrd => \%rrd_data };
+        print YAML::XS::Dump { key => $key, rrd => \%rrd_data };
     }
 
     if ( $self->lastupdates->{$rrd_filename} && $self->lastupdates->{$rrd_filename} == $time ) {
@@ -165,7 +165,7 @@ App::Wubot::Reactor::RRD - store data in an RRD with RRD::Simple
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

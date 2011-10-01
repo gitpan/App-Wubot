@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::WebMatches;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::Util::WebFetcher;
@@ -11,7 +11,6 @@ with 'App::Wubot::Plugin::Roles::Plugin';
 
 
 has 'fetcher' => ( is  => 'ro',
-                   isa => 'App::Wubot::Util::WebFetcher',
                    lazy => 1,
                    default => sub {
                        return App::Wubot::Util::WebFetcher->new();
@@ -41,10 +40,19 @@ sub check {
 
     $self->logger->debug( "REGEXP: $regexp" );
 
-  MATCH:
-    while ( $content =~ m|$regexp|mg ) {
+    my $count;
 
-        my $match = $1;
+    my @matches;
+    if ( $config->{modifier_s} ) {
+        @matches = $content =~ m|$regexp|sg;
+    }
+    else {
+        @matches = $content =~ m|$regexp|mg;
+    }
+
+    for my $match ( @matches ) {
+
+        $count++;
 
         $self->logger->trace( "MATCH: $match" );
 
@@ -65,6 +73,11 @@ sub check {
 
     $self->cache_expire( $cache );
 
+    unless ( $count ) {
+        $self->logger->error( $self->key . ": no matches found" );
+        return { cache => $cache, react => [ { subject => "no matches found" } ] };
+    }
+
     return { react => \@react, cache => $cache };
 }
 
@@ -82,7 +95,7 @@ App::Wubot::Plugin::WebMatches - monitor a web page for items matching a regexp
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 
@@ -107,6 +120,17 @@ In the event of a failure retrieving content from the specified URL, a
 message will be sent containing a subject field such as:
 
   subject: Request failure: {$error}
+
+=head1 REGEXP MODIFIERS
+
+By default the matching regexp will use the modifiers 'mg'.
+
+If your regexp needs to match a pattern that spans multiple lines, you
+will probably want to use the 'sg' modifiers instead.  To use 'sg',
+set the following in your plugin configuration:
+
+  modifier_s: 1
+
 
 =head1 HINTS
 

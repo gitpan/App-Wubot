@@ -273,6 +273,7 @@ lib/App/Wubot/Plugin/EmacsOrgMode.pm
 lib/App/Wubot/Plugin/Facebook.pm
 lib/App/Wubot/Plugin/FileRegexp.pm
 lib/App/Wubot/Plugin/FileTail.pm
+lib/App/Wubot/Plugin/FirefoxBookmarks.pm
 lib/App/Wubot/Plugin/IRC.pm
 lib/App/Wubot/Plugin/Mbox.pm
 lib/App/Wubot/Plugin/MoonPhase.pm
@@ -424,6 +425,7 @@ t/time_lengths.t
 t/uptime.t
 t/util_tasks.t
 t/web_fetch.t
+t/web_matches.t
 t/webui.t
 t/workhours.t
 t/wubot_sqlite.t

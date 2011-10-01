@@ -83,16 +83,16 @@ requires:
   Term::ANSIColor: 0
   Test::Differences: 0
   Test::Exception: 0
+  Test::MockObject: 0
   Test::Mojo: 0
   Test::More: 0
   Test::Routine: 0
   Text::Template: 0
   URI::Escape: 0
-  YAML: 0
   YAML::XS: 0
   strict: 0
   utf8: 0
   warnings: 0
 resources:
   repository: http://github.com/wu/wubot
-version: 0.3.6
+version: 0.3.7

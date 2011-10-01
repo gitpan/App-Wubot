@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Command;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use FileHandle;
 use File::Path;
@@ -183,7 +183,7 @@ sub monitor {
                 $status->{message} = Load $status->{message};
             }
             else {
-                $self->logger->error( "ERROR: queue entry has no message", YAML::Dump $status );
+                $self->logger->error( "ERROR: queue entry has no message", YAML::XS::Dump $status );
             }
 
             $message->{command_status} = $status->{status};
@@ -489,7 +489,7 @@ App::Wubot::Reactor::Command - run an external command using data from the messa
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 DESCRIPTION
 

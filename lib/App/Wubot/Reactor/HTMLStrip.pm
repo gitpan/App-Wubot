@@ -1,10 +1,9 @@
 package App::Wubot::Reactor::HTMLStrip;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use HTML::Strip;
-use YAML;
 
 use App::Wubot::Logger;
 
@@ -48,7 +47,7 @@ App::Wubot::Reactor::HTMLStrip - strip HTML data from a field
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

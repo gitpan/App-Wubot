@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::TiVo;
 use Moose;
 
-our $VERSION = '0.3.6'; # VERSION
+our $VERSION = '0.3.7'; # VERSION
 
 use Net::TiVo;
 
@@ -120,7 +120,7 @@ App::Wubot::Plugin::TiVo - monitor a tivo for new recordings
 
 =head1 VERSION
 
-version 0.3.6
+version 0.3.7
 
 =head1 SYNOPSIS
 

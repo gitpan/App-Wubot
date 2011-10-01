@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 29;
+use Test::More;
 
 use File::Temp qw/ tempdir /;
 
@@ -137,15 +137,12 @@ my $cases = [
 
 for my $testcase ( @{ $cases } ) {
 
-    #print YAML::Dump { testcase => $testcase };
-
     my $tempdir = tempdir( "/tmp/tmpdir-XXXXXXXXXX", CLEANUP => 1 );
 
     my $state = App::Wubot::Reactor::State->new( { cachedir => $tempdir } );
 
     for my $idx ( 0 .. $#{ $testcase->{cases} } - 1 ) {
         $state->react( $testcase->{cases}->[$idx], $testcase->{config} );
-        #print YAML::Dump { cases => $testcase->{cases} };
     }
 
     my $got = $state->react( $testcase->{cases}->[-1], $testcase->{config} );
@@ -171,14 +168,17 @@ for my $testcase ( @{ $cases } ) {
                "Checking that monitor() returns no errors with no data in cache"
            );
 
-    $state->react( { key => 'testkey', testfield => 5, lastupdate => time-50 }, { field => 'testfield', change => 10 } );
+    $state->react( { key => 'testkey', testfield => 5, lastupdate => time-50 },
+                   { field => 'testfield', change => 10 }
+               );
 
     is_deeply( [ $state->monitor() ],
                [ ],
                "Checking that monitor() returns no errors with cache data updated recently"
            );
 
-    $state->react( { key => 'testkey', testfield => 5, lastupdate => time-2*24*60*60 }, { field => 'testfield', change => 10 } );
+    $state->react( { key => 'testkey', testfield => 5, lastupdate => time-2*24*60*60 },
+                   { field => 'testfield', change => 10, notify_interval => '1d' } );
 
     my @results = $state->monitor();
 
@@ -191,7 +191,8 @@ for my $testcase ( @{ $cases } ) {
 
     is_deeply( \@results,
                [ { subject => "Warning: cache data for testkey:testfield not updated in 2d",
-                   key     => 'testkey'
+                   key     => 'testkey',
+                   mailbox => undef,
                } ],
                "Checking that monitor() returns warning with lastupdate time > 5 minues"
            );
@@ -202,11 +203,17 @@ for my $testcase ( @{ $cases } ) {
 
     my $state = App::Wubot::Reactor::State->new( { cachedir => $tempdir } );
 
-    $state->react( { key => 'TestCase1', x => 5, lastupdate => time-60*60 }, { field => 'a', change => 10 } );
+    $state->react( { key => 'TestCase1', x => 5, lastupdate => time-60*60 },
+                   { field => 'a', change => 10, notify_interval => '5m' }
+               );
 
-    $state->react( { key => 'TestCase2', x => 5, lastupdate => time-60*60 }, { field => 'a', change => 10 } );
+    $state->react( { key => 'TestCase2', x => 5, lastupdate => time-60*60 },
+                   { field => 'a', change => 10, notify_interval => '5m' }
+               );
 
-    $state->react( { key => 'TestCase3', x => 5, lastupdate => time-60*60 }, { field => 'a', change => 10 } );
+    $state->react( { key => 'TestCase3', x => 5, lastupdate => time-60*60 },
+                   { field => 'a', change => 10, notify_interval => '5m' }
+               );
 
     my @results = $state->monitor();
 
@@ -220,12 +227,15 @@ for my $testcase ( @{ $cases } ) {
     is_deeply( \@results,
                [ { key => 'TestCase1',
                    subject => 'Warning: cache data for TestCase1:a not updated in 1h',
+                   mailbox => undef,
                },
                  { key => 'TestCase2',
                    subject => 'Warning: cache data for TestCase2:a not updated in 1h',
+                   mailbox => undef,
                },
                  { key => 'TestCase3',
                    subject => 'Warning: cache data for TestCase3:a not updated in 1h',
+                   mailbox => undef,
                },
              ],
                "Checking that monitor() returns no changes in cache"
@@ -234,15 +244,15 @@ for my $testcase ( @{ $cases } ) {
 
 }
 
-
-
 {
     my $tempdir = tempdir( "/tmp/tmpdir-XXXXXXXXXX", CLEANUP => 1 );
 
     {
         my $state = App::Wubot::Reactor::State->new( { cachedir => $tempdir } );
 
-        $state->react( { key => 'TestCase1', x => 5, lastupdate => time-60*60 }, { field => 'a', change => 10 } );
+        $state->react( { key => 'TestCase1', x => 5, lastupdate => time-60*60 },
+                       { field => 'a', change => 10, notify_interval => '45m' }
+                   );
 
     }
     {
@@ -260,6 +270,7 @@ for my $testcase ( @{ $cases } ) {
         is_deeply( \@results,
                    [ { key => 'TestCase1',
                        subject => 'Warning: cache data for TestCase1:a not updated in 1h',
+                       mailbox => undef,
                    },
                  ],
                    "Checking that monitor() finds cache data from previous App::Wubot::Reactor::State instance"
@@ -291,6 +302,7 @@ for my $testcase ( @{ $cases } ) {
         is_deeply( \@results,
                    [ { key => 'TestCase1',
                        subject => 'Warning: cache data for TestCase1:a not updated in 1h',
+                       mailbox => undef,
                    },
                  ],
                    "Checking that monitor() sends a notification for stale cache"
@@ -317,6 +329,7 @@ for my $testcase ( @{ $cases } ) {
         is_deeply( \@results,
                    [ { key => 'TestCase1',
                        subject => 'Warning: cache data for TestCase1:a not updated in 1h',
+                       mailbox => undef,
                    },
                  ],
                    "Checking that monitor() returns notification after notify interval"
@@ -324,4 +337,4 @@ for my $testcase ( @{ $cases } ) {
     }
 }
 
-
+done_testing;
