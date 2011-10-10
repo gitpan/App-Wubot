@@ -1,12 +1,20 @@
 package App::Wubot::Plugin::SafariBookmarks;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use LWP::Simple;
 use XML::Simple;
 
 use App::Wubot::Logger;
+
+has 'logger'  => ( is => 'ro',
+                   isa => 'Log::Log4perl::Logger',
+                   lazy => 1,
+                   default => sub {
+                       return Log::Log4perl::get_logger( __PACKAGE__ );
+                   },
+               );
 
 with 'App::Wubot::Plugin::Roles::Cache';
 with 'App::Wubot::Plugin::Roles::Plugin';
@@ -22,9 +30,7 @@ sub check {
     my $cache  = $inputs->{cache};
 
     unless ( -r $file ) {
-        my $subject = "Error: bookmarks file not found: $file";
-        $self->logger->error( $self->key . ": $subject" );
-        return { cache => $cache, react => { subject => $subject } };
+        $self->logger->logdie( "Error: bookmarks file not found: $file" );
     }
 
     my $tmpfile = "/tmp/bookmarks.plist";
@@ -127,7 +133,7 @@ App::Wubot::Plugin::SafariBookmarks - monitor for new safari bookmarks
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 DESCRIPTION
 

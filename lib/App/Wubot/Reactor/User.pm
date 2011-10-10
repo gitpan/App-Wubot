@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::User;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 # todo
 #  - App::Wubot::Util::User
@@ -106,9 +106,12 @@ sub react {
 
         for my $param ( qw( username color image ) ) {
 
-            if (    $message->{$param}
-                 && ! $message->{"$param\_orig"}
-                 && $message->{$param} ne $userdata->{ $param } ) {
+            if (      $userdata->{ $param }
+                 &&    $message->{ $param }
+                 && !  $message->{ "$param\_orig" }
+                 && $message->{$param} ne $userdata->{ $param }
+             ) {
+
                 $message->{"$param\_orig"} = $message->{$param};
             }
             if ( $userdata->{ $param } ) {
@@ -222,7 +225,7 @@ App::Wubot::Reactor::User - try to identify user from the 'username' field
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

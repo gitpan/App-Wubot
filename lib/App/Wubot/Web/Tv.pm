@@ -2,7 +2,7 @@ package App::Wubot::Web::Tv;
 use strict;
 use warnings;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -478,7 +478,7 @@ App::Wubot::Web::Tv - wubot tv web interface
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 CONFIGURATION
 

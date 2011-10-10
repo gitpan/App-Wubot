@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::WebFetch;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 # todo: select with xpath in addition to regexp
 
@@ -27,16 +27,7 @@ sub check {
 
     $self->logger->debug( "Fetching content from: $config->{url}" );
 
-    my $content;
-    eval {                          # try
-        $content = $self->fetcher->fetch( $config->{url}, $config );
-        1;
-    } or do {                       # catch
-        my $error = $@;
-        my $subject = "Request failure: $error";
-        $self->logger->error( $self->key . ": $subject" );
-        return { react => { subject => $subject } };
-    };
+    my $content = $self->fetcher->fetch( $config->{url}, $config );
 
     my $field = $config->{field} || 'content';
 
@@ -57,7 +48,7 @@ App::Wubot::Plugin::WebFetch - fetch content from a URL
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

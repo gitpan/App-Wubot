@@ -5,7 +5,7 @@ use Moose;
 use Capture::Tiny;
 use Device::SerialPort qw( :PARAM :STAT :ALL );
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -37,8 +37,7 @@ sub init {
     }
 
     unless ( -r $inputs->{config}->{device} ) {
-        $self->logger->error( "ERROR: device not readable: $inputs->{config}->{device}" );
-        return;
+        $self->logger->logdie( "ERROR: device not readable: $inputs->{config}->{device}" );
     }
 
     $self->device( $inputs->{config}->{device} );
@@ -107,7 +106,7 @@ App::Wubot::Plugin::SerialPort - monitor data received over a serial port
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 DESCRIPTION
 

@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::Ping;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -54,6 +54,7 @@ sub check {
 
     if ( $loss == $num_packets ) {
         $reaction->{subject} = "Unable to ping host: $config->{host}";
+        $reaction->{status}  = 'CRITICAL';
     }
 
     return { react => $reaction };
@@ -71,7 +72,7 @@ App::Wubot::Plugin::Ping - monitor ping response from a remote host
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

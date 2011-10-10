@@ -1,14 +1,20 @@
 package App::Wubot::Util::WebFetcher;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use HTTP::Message;
 use LWP::UserAgent;
 
 use App::Wubot::Logger;
 
-use App::Wubot::Util::WebFetcher;
+has 'logger'  => ( is => 'ro',
+                   isa => 'Log::Log4perl::Logger',
+                   lazy => 1,
+                   default => sub {
+                       return Log::Log4perl::get_logger( __PACKAGE__ );
+                   },
+               );
 
 =head1 NAME
 
@@ -17,7 +23,7 @@ App::Wubot::Util::WebFetcher - fetch content from the web
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 
@@ -137,7 +143,7 @@ sub fetch {
 
     unless ( $res->is_success ) {
         my $results = $res->status_line || "no error text";
-        die "$results\n";
+        $self->logger->logdie( "Failure Fetching Content: $results" );
     }
 
     my $content = $res->decoded_content;

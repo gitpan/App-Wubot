@@ -1,12 +1,20 @@
 package App::Wubot::Plugin::Directory;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use App::Wubot::Logger;
 
 with 'App::Wubot::Plugin::Roles::Cache';
 with 'App::Wubot::Plugin::Roles::Plugin';
+
+has 'logger'  => ( is => 'ro',
+                   isa => 'Log::Log4perl::Logger',
+                   lazy => 1,
+                   default => sub {
+                       return Log::Log4perl::get_logger( __PACKAGE__ );
+                   },
+               );
 
 sub check {
     my ( $self, $inputs ) = @_;
@@ -17,9 +25,7 @@ sub check {
     my $directory = $config->{path};
 
     unless ( -d $directory ) {
-        my $subject = "Error: directory not found: $directory";
-        $self->logger->error( $self->key . ": $subject" );
-        return { cache => $cache, react => { subject => $subject } };
+        $self->logger->logdie( "Error: directory not found: $directory" );
     }
 
     my @react;
@@ -67,7 +73,7 @@ App::Wubot::Plugin::Directory - monitor a directory for new files
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

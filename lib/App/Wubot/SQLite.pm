@@ -1,7 +1,7 @@
 package App::Wubot::SQLite;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use Capture::Tiny;
 use DBI;
@@ -20,7 +20,7 @@ App::Wubot::SQLite - the wubot library for working with SQLite
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 
@@ -126,7 +126,16 @@ has 'schema_dir'   => ( is       => 'ro',
                         lazy     => 1,
                         default  => sub {
                             my $self = shift;
-                            my $schema_dir = join( "/", $ENV{HOME}, "wubot", "schemas" );
+                            my $schema_dir;
+                            if ( $ENV{WUBOT_SCHEMAS} ) {
+                                $schema_dir = $ENV{WUBOT_SCHEMAS};
+                            }
+                            else {
+                                $schema_dir = join( "/", $ENV{HOME}, "wubot", "schemas" );
+                            }
+                            unless ( -d $schema_dir ) {
+                                $self->logger->logdie( "schema directory does not exist: $schema_dir" );
+                            }
                             $self->logger->debug( "schema directory: $schema_dir" );
                             return $schema_dir;
                         },
@@ -640,7 +649,7 @@ sub get_prepared {
                     $self->add_column( $table, $column, $schema->{$column} );
                     next RETRY;
                 } else {
-                    $self->logger->logcroak( "Missing column not defined in schema: $column" );
+                    $self->logger->logcroak( "Missing column $column not defined in schema for $table" );
                 }
             } else {
                 $self->logger->logcroak( "Unhandled error: $error" );

@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::State;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use File::Path;
 use YAML::XS;
@@ -205,7 +205,12 @@ sub monitor {
                 my $warning = "Warning: cache data for $key:$field not updated in $check_age_string";
                 $self->logger->warn( $warning );
 
-                push @react, { key => $key, subject => $warning, lastupdate => $now, mailbox => $mailbox };
+                push @react, { key        => $key,
+                               status     => 'WARNING',
+                               subject    => $warning,
+                               lastupdate => $now,
+                               mailbox    => $mailbox,
+                           };
 
             }
         }
@@ -232,7 +237,7 @@ App::Wubot::Reactor::State - monitor the state of message fields over time
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 DESCRIPTION
 

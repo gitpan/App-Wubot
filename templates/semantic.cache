@@ -1,0 +1,57 @@
+;; Object templates/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "templates/"
+  :tables (list 
+   (semanticdb-table "tasks.html.ep"
+    :major-mode 'html-mode
+    :tags '(("Tasks" section nil nil [21 114]) ("a {
+  color: #000000;
+  text-decoration: none;
+}" section nil nil [114 180]) ("a {
+  color: #000000;
+  text-decoration: none;
+}" section nil nil [180 243]) ("a {
+  color: #000000;
+  text-decoration: none;
+}" section nil nil [243 417]) ("|
+    <a href=\"/notify\" style=\"color: #cccccc\">notifications" section (:members (("notifications" section nil nil [488 557]) ("tags" section nil nil [557 615]) ("graphs" section nil nil [615 1018]) (".org/<%= $row->{emacs_link} %>'><%= $row->{file} %>" section nil nil [1018 1147]) (".org/<%= $row->{emacs_link} %>?done=1'>*" section nil nil [1147 1150]))) nil [417 423]))
+    :file "tasks.html.ep"
+    :pointmax 1429
+    )
+   (semanticdb-table "graphs.html.ep"
+    :major-mode 'html-mode
+    :tags '(("Graphs" section nil nil [21 101]) ("|
+    <a href=\"/notify\" style=\"color: #cccccc\">notifications" section (:members (("notifications" section nil nil [170 239]) ("tags" section nil nil [239 297]) ("graphs" section nil nil [297 406]) ("|
+    <% } %>
+    <hr>
+
+
+    <% for my $graph ( @$images ) { %>
+      <img src=\"<%= $graph %>\">
+    <% } %>" section nil nil [406 409]))) nil [101 107]))
+    :file "graphs.html.ep"
+    :pointmax 582
+    )
+   (semanticdb-table "notify.html.ep"
+    :major-mode 'html-mode
+    :tags '(("wubot: <%= $item->{subject_text} %>" section nil nil #<overlay from 21 to 109 in item.html.ep>) ("id" section (:members (("seen" section nil nil #<overlay from 721 to 1426 in item.html.ep>) ("%>" section nil nil #<overlay from 1426 to 1598 in item.html.ep>) ("{mailbox} %>" section nil nil #<overlay from 1598 to 1770 in item.html.ep>) ("{key} %>" section nil nil #<overlay from 1770 to 2144 in item.html.ep>) ("{link} %>" section nil nil #<overlay from 2144 to 2323 in item.html.ep>) ("%>" section nil nil #<overlay from 2323 to 2326 in item.html.ep>))) nil #<overlay from 109 to 115 in item.html.ep>))
+    :file "notify.html.ep"
+    :pointmax 3051
+    )
+   (semanticdb-table "css.html.ep"
+    :major-mode 'html-mode
+    :tags 'nil
+    :file "css.html.ep"
+    :pointmax 783
+    )
+   (semanticdb-table "tags.html.ep"
+    :major-mode 'html-mode
+    :tags '(("wubot configuration" section nil nil [21 140]) ("" section nil nil [140 146]))
+    :file "tags.html.ep"
+    :pointmax 252
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre4"
+  :semanticdb-version "2.0pre4"
+  )

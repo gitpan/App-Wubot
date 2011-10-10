@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::OsxVolume;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -24,11 +24,11 @@ sub check {
     }
 
     if ( $config->{alert_muted} && $settings->{'output muted'} eq "true" ) {
-        return { react => { subject => 'volume muted' } };
+        return { react => { subject => 'volume muted', status => 'WARNING' } };
     }
 
     if ( $settings->{'output volume'} < $config->{min_volume} ) {
-        return { react => { subject => "low volume: $settings->{'output volume'}" } };
+        return { react => { subject => "low volume: $settings->{'output volume'}", status => 'WARNING' } };
     }
 
     return;
@@ -48,7 +48,7 @@ App::Wubot::Plugin::OsxVolume - monitor OS X volume
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

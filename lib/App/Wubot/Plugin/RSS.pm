@@ -1,12 +1,20 @@
 package App::Wubot::Plugin::RSS;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use XML::Feed;
 
 use App::Wubot::Logger;
 use App::Wubot::Util::WebFetcher;
+
+has 'logger'  => ( is => 'ro',
+                   isa => 'Log::Log4perl::Logger',
+                   lazy => 1,
+                   default => sub {
+                       return Log::Log4perl::get_logger( __PACKAGE__ );
+                   },
+               );
 
 with 'App::Wubot::Plugin::Roles::Cache';
 with 'App::Wubot::Plugin::Roles::Plugin';
@@ -25,33 +33,21 @@ sub check {
     my $config = $inputs->{config};
     my $cache  = $inputs->{cache};
 
-    my $content;
-    eval {                          # try
-        $content = $self->fetcher->fetch( $config->{url}, $config );
-        1;
-    } or do {                       # catch
-        my $error = $@;
-        my $subject = "Request failure: $error";
-        $self->logger->error( $self->key . ": $subject" );
-        return { cache => $cache, react => { subject => $subject } };
-    };
+    my $content = $self->fetcher->fetch( $config->{url}, $config );
 
     my $feed;
     eval { $feed = XML::Feed->parse( \$content ) };
 
     unless ( $feed ) {
         my $error = XML::Feed->errstr || "no error text";
-        my $subject = "Failure parsing XML Feed: $error";
-        $self->logger->error( $self->key . ": $subject" );
-        return { cache => $cache, react => { subject => $subject } };
+        $self->logger->logdie( "Failure parsing XML Feed: $error" );
     }
 
     my @entries = $feed->entries;
 
     my $count = scalar @entries;
     unless ( $count ) {
-        $self->logger->warn( $self->key, ": No items in feed" );
-        return { cache => $cache, react => { subject => "No items in feed" } };
+        $self->logger->logdie( "No items found in feed" );
     }
 
     my @react;
@@ -120,7 +116,7 @@ App::Wubot::Plugin::RSS - monitor an RSS feed
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

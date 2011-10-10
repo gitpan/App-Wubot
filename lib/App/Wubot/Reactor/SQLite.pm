@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::SQLite;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::SQLite;
@@ -55,7 +55,7 @@ App::Wubot::Reactor::SQLite - insert or update a message in a SQLite table row
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 DESCRIPTION
 

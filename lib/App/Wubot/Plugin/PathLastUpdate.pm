@@ -1,9 +1,17 @@
 package App::Wubot::Plugin::PathLastUpdate;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use App::Wubot::Logger;
+
+has 'logger'  => ( is => 'ro',
+                   isa => 'Log::Log4perl::Logger',
+                   lazy => 1,
+                   default => sub {
+                       return Log::Log4perl::get_logger( __PACKAGE__ );
+                   },
+               );
 
 with 'App::Wubot::Plugin::Roles::Cache';
 with 'App::Wubot::Plugin::Roles::Plugin';
@@ -20,7 +28,7 @@ sub check {
     my $path = $config->{path};
 
     unless ( -r $path ) {
-        return { react => { subject => "path not found: $path" } };
+        $self->logger->logdie( "path not found: $path" );
     }
 
     my $last_modified = ( stat $path )[9];
@@ -33,7 +41,7 @@ sub check {
 
         my $time_passed = $timelength->get_human_readable( $age );
 
-        return { react => { subject => "path has not been updated in $time_passed" } };
+        return { react => { subject => "path has not been updated in $time_passed", status => 'CRITICAL' } };
     }
 
     return;
@@ -53,7 +61,7 @@ App::Wubot::Plugin::PathLastUpdate - monitor the last modified time on a path
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

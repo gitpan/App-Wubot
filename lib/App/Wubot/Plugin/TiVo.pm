@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::TiVo;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use Net::TiVo;
 
@@ -35,7 +35,8 @@ sub check {
         my $pid = fork();
         if ( $pid ) {
             # parent process
-            return { react => { subject  => "launched tivo child process: $pid",
+            return { react => { info     => "launched tivo child process: $pid",
+                                pid      => $pid,
                                 coalesce => $self->key,
                             } }
         }
@@ -48,8 +49,13 @@ sub check {
             mac   => $config->{key},
         );
 
+        my $folder_count;
+        my $show_count;
+
       FOLDER:
         for my $folder ($tivo->folders()) {
+
+            $folder_count++;
 
             my $folder_string = $folder->as_string();
             $self->logger->debug( "TIVO FOLDER: $folder_string" );
@@ -58,6 +64,9 @@ sub check {
 
           SHOW:
             for my $show ($folder->shows()) {
+
+                $show_count++;
+
                 my $show_string = $show->as_string();
 
                 next SHOW if $cache->{shows}->{$show_string};
@@ -95,13 +104,20 @@ sub check {
             }
         }
 
+        unless ( $show_count ) {
+            $self->logger->logdie( "ERROR: now show information retrieved from the tivo" );
+        }
+
+        $self->reactor->( { subject => "Retrieved information for $show_count shows in $folder_count folders",
+                        } );
+
         # write out the updated cache
         $self->write_cache( $cache );
 
         1;
     } or do {                   # catch
 
-        $self->logger->info( "ERROR: getting tivo info: $@" );
+        $self->logger->logdie( "ERROR: getting tivo info: $@" );
     };
 
     exit 0;
@@ -120,7 +136,7 @@ App::Wubot::Plugin::TiVo - monitor a tivo for new recordings
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 
@@ -181,7 +197,7 @@ although that is not yet documented.
 
 You can download a program manually by using a curl command such as:
 
-  curl --digest -k -u tivo:{media_key} -c cookies.txt -o {some_filename}.tivo {url}
+  curl --digest -k -u tivo:{media_key} -c cookies.txt -o {some_filename}.tivo '{url}'
 
 Note that some programs (e.g. those that are downloaded from the web)
 may be protected, and can not be downloaded.

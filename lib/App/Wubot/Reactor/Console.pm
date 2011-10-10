@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Console;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use POSIX qw(strftime);
 use Term::ANSIColor;
@@ -90,7 +90,7 @@ App::Wubot::Reactor::Console - display a notification to stdout
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

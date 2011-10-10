@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl -w
 use strict;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use AnyEvent::Watchdog autorestart => 1, heartbeat => 300;
 
@@ -148,6 +148,7 @@ push @timers, AnyEvent->timer( after => 1,
                                        my $time = $timelength->get_human_readable( $now - $lastupdate );
                                        react( { subject    => "reactor on $hostname has not received a message in $time",
                                                 key        => 'wubot-reactor',
+                                                status     => 'WARNING',
                                                 noforward  => 1,
                                                 lastupdate => $now,
                                             } );
@@ -186,7 +187,7 @@ __END__
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 

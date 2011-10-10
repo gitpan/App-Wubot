@@ -329,6 +329,7 @@ lib/App/Wubot/Reactor/SQLiteDelete.pm
 lib/App/Wubot/Reactor/SetField.pm
 lib/App/Wubot/Reactor/Split.pm
 lib/App/Wubot/Reactor/State.pm
+lib/App/Wubot/Reactor/Status.pm
 lib/App/Wubot/Reactor/Template.pm
 lib/App/Wubot/Reactor/TransformField.pm
 lib/App/Wubot/Reactor/UrlLengthen.pm
@@ -355,6 +356,7 @@ public/sort/doc.txt.orig
 public/sort/index.html.orig
 public/sort/standardista-table-sorting.js
 public/sort/style.css
+scripts/semantic.cache
 t/000-report-versions-tiny.t
 t/arp.t
 t/author-critic.t
@@ -407,6 +409,7 @@ t/react_makedirectory.t
 t/react_rrd.t
 t/react_setfield.t
 t/react_state.t
+t/react_status.t
 t/react_template.t
 t/react_transformfield.t
 t/react_urllengthen.t
@@ -446,6 +449,7 @@ templates/ok.html.ep
 templates/program.html.ep
 templates/roles.html.ep
 templates/rss.xml.epl
+templates/semantic.cache
 templates/tags.html.ep
 templates/tasks.html.ep
 templates/tv.html.ep

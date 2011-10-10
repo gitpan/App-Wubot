@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::EmacsOrgMode;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use Date::Manip;
 use File::chdir;
@@ -43,6 +43,9 @@ sub check {
 
     opendir( $dir_h, $config->{directory} ) or die "Can't opendir $config->{directory}: $!";
 
+    my %updated_files;
+
+    # look through the directory for updated files to be processed
   FILE:
     while ( defined( my $entry = readdir( $dir_h ) ) ) {
 
@@ -56,12 +59,19 @@ sub check {
 
         $cache->{files}->{$entry}->{lastupdate} = $updated;
 
+        $updated_files{$entry} = $updated;
+        $self->logger->info( "Found updated file: $config->{directory}/$entry => $updated" );
+
         if ( $page_count++ > 100 ) {
             $self->logger->info( "Reached maximum page count: 100" );
             last FILE;
         }
+    }
 
-        $self->logger->info( "Checking updated file: $config->{directory}/$entry => $updated" );
+    # sort updated entries so they are processed in a predicatable order
+    for my $entry ( sort keys %updated_files ) {
+
+        my $updated = $updated_files{$entry};
 
         open(my $fh, "<", "$config->{directory}/$entry" )
             or die "Couldn't open $config->{directory}/$entry for reading: $!\n";
@@ -148,7 +158,7 @@ App::Wubot::Plugin::EmacsOrgMode - parse tasks from Emacs Org-Mode files
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 DESCRIPTION
 

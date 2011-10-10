@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::WebMatches;
 use Moose;
 
-our $VERSION = '0.3.7'; # VERSION
+our $VERSION = '0.3.8'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::Util::WebFetcher;
@@ -9,11 +9,18 @@ use App::Wubot::Util::WebFetcher;
 with 'App::Wubot::Plugin::Roles::Cache';
 with 'App::Wubot::Plugin::Roles::Plugin';
 
-
 has 'fetcher' => ( is  => 'ro',
                    lazy => 1,
                    default => sub {
                        return App::Wubot::Util::WebFetcher->new();
+                   },
+               );
+
+has 'logger'  => ( is => 'ro',
+                   isa => 'Log::Log4perl::Logger',
+                   lazy => 1,
+                   default => sub {
+                       return Log::Log4perl::get_logger( __PACKAGE__ );
                    },
                );
 
@@ -23,16 +30,7 @@ sub check {
     my $config = $inputs->{config};
     my $cache  = $inputs->{cache};
 
-    my $content;
-    eval {                          # try
-        $content = $self->fetcher->fetch( $config->{url}, $config );
-        1;
-    } or do {                       # catch
-        my $error = $@;
-        my $subject = "Request failure: $error";
-        $self->logger->error( $self->key . ": $subject" );
-        return { cache => $cache, react => { subject => $subject } };
-    };
+    my $content = $self->fetcher->fetch( $config->{url}, $config );
 
     my @react;
 
@@ -50,6 +48,7 @@ sub check {
         @matches = $content =~ m|$regexp|mg;
     }
 
+  MATCH:
     for my $match ( @matches ) {
 
         $count++;
@@ -74,8 +73,7 @@ sub check {
     $self->cache_expire( $cache );
 
     unless ( $count ) {
-        $self->logger->error( $self->key . ": no matches found" );
-        return { cache => $cache, react => [ { subject => "no matches found" } ] };
+        $self->logger->logdie( "ERROR: no matches found" );
     }
 
     return { react => \@react, cache => $cache };
@@ -95,7 +93,7 @@ App::Wubot::Plugin::WebMatches - monitor a web page for items matching a regexp
 
 =head1 VERSION
 
-version 0.3.7
+version 0.3.8
 
 =head1 SYNOPSIS
 
