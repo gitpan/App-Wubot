@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::Facebook;
 use Moose;
 
-our $VERSION = '0.3.9'; # VERSION
+our $VERSION = '0.3.10'; # VERSION
 
 use HTML::TokeParser::Simple;
 use HTML::Strip;
@@ -175,7 +175,7 @@ App::Wubot::Plugin::Facebook - scrape facebook wall
 
 =head1 VERSION
 
-version 0.3.9
+version 0.3.10
 
 =head1 SYNOPSIS
 

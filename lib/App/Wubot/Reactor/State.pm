@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::State;
 use Moose;
 
-our $VERSION = '0.3.9'; # VERSION
+our $VERSION = '0.3.10'; # VERSION
 
 use File::Path;
 use YAML::XS;
@@ -241,7 +241,7 @@ App::Wubot::Reactor::State - monitor the state of message fields over time
 
 =head1 VERSION
 
-version 0.3.9
+version 0.3.10
 
 =head1 DESCRIPTION
 
