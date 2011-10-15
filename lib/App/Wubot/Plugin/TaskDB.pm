@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::TaskDB;
 use Moose;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 use DBI;
 use POSIX qw(strftime);
@@ -68,7 +68,7 @@ App::Wubot::Plugin::TaskDB - monitor the highest priority task in the task db
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 DESCRIPTION
 

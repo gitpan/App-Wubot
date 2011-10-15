@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::State;
 use Moose;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 use File::Path;
 use YAML::XS;
@@ -160,12 +160,20 @@ sub monitor {
 
     my $directory = $self->cachedir;
 
+    my @files;
+
     my $dir_h;
     opendir( $dir_h, $directory ) or die "Can't opendir $directory: $!";
-
-  FILE:
     while ( defined( my $entry = readdir( $dir_h ) ) ) {
         next unless $entry && $entry =~ m|\.yaml$|;
+
+        push @files, $entry;
+    }
+    closedir( $dir_h );
+
+
+  FILE:
+    for my $entry ( sort @files ) {
 
         my $cache = YAML::XS::LoadFile( "$directory/$entry" );
 
@@ -202,23 +210,19 @@ sub monitor {
                 YAML::XS::DumpFile( "$directory/$entry", $cache );
 
                 my $check_age_string = $self->timelength->get_human_readable( $check_age );
-                my $warning = "Warning: cache data for $key:$field not updated in $check_age_string";
-                $self->logger->warn( $warning );
+                my $error = "cache data for $key:$field not updated in $check_age_string";
+                $self->logger->warn( $error );
 
                 push @react, { key        => $key,
-                               status     => 'WARNING',
-                               subject    => $warning,
+                               status     => 'CRITICAL',
+                               subject    => $error,
                                lastupdate => $now,
                                mailbox    => $mailbox,
                            };
 
             }
         }
-
-
     }
-    closedir( $dir_h );
-
 
     return unless @react;
 
@@ -237,7 +241,7 @@ App::Wubot::Reactor::State - monitor the state of message fields over time
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 DESCRIPTION
 

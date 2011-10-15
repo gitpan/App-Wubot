@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::WriteFile;
 use Moose;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 use YAML::XS;
 
@@ -65,7 +65,7 @@ App::Wubot::Reactor::WriteFile - write data from a message to an external file
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 DESCRIPTION
 

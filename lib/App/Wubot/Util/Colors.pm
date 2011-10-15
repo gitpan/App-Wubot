@@ -1,7 +1,7 @@
 package App::Wubot::Util::Colors;
 use Moose;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 # solarized color schema: http://ethanschoonover.com/solarized
 my $pretty_colors = { pink      => '#FF33FF',
@@ -56,7 +56,7 @@ App::Wubot::Util::Colors - color themes for wubot
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 DESCRIPTION
 

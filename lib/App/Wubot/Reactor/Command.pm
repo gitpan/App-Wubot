@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Command;
 use Moose;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 use FileHandle;
 use File::Path;
@@ -220,15 +220,19 @@ sub monitor {
                 $subject .= " => $message->{command_name}";
             }
             $message->{subject} = $subject;
+            delete $message->{subject_text};
+            $message->{status}  = 'CRITICAL';
             $self->logger->error( $subject );
             $self->logger->error( $output );
         }
         else {
             my $subject = "Command succeeded: $id";
+            $message->{status}  = 'OK';
             if ( $message->{command_name} ) {
                 $subject .= " => $message->{command_name}";
             }
             $message->{subject} = $subject;
+            delete $message->{subject_text};
             if ( $message->{command_noresults} ) {
                 $self->logger->debug( $subject );
             }
@@ -489,7 +493,7 @@ App::Wubot::Reactor::Command - run an external command using data from the messa
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 DESCRIPTION
 

@@ -2,7 +2,7 @@ package App::Wubot::Web::Notify;
 use strict;
 use warnings;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -23,7 +23,7 @@ App::Wubot::Web::Notify - web interface for wubot notifications
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 CONFIGURATION
 

@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::Arp;
 use Moose;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -64,7 +64,7 @@ App::Wubot::Plugin::Arp - monitor the arp table for new entries
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::UrlLengthen;
 use Moose;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 use LWP::UserAgent;
 use URI::Find;
@@ -16,7 +16,7 @@ App::Wubot::Reactor::UrlLengthen - lengthen URLs using WWW::LongURL
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 SYNOPSIS
 

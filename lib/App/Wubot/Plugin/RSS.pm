@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::RSS;
 use Moose;
 
-our $VERSION = '0.3.8'; # VERSION
+our $VERSION = '0.3.9'; # VERSION
 
 use XML::Feed;
 
@@ -116,7 +116,7 @@ App::Wubot::Plugin::RSS - monitor an RSS feed
 
 =head1 VERSION
 
-version 0.3.8
+version 0.3.9
 
 =head1 SYNOPSIS
 
