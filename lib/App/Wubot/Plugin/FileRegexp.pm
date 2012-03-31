@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::FileRegexp;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use YAML::XS;
 
@@ -92,7 +92,7 @@ App::Wubot::Plugin::FileRegexp - monitor number of lines matching regular expres
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 DESCRIPTION
 

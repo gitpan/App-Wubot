@@ -1,7 +1,7 @@
 package App::Wubot::LocalMessageStore;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use Digest::MD5 qw( md5_hex );
 use File::Path;
@@ -19,7 +19,7 @@ App::Wubot::LocalMessageStore - add or remove messages from a local wubot SQLite
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 
@@ -97,6 +97,14 @@ has 'reactor' => ( is => 'ro',
 has 'novacuum' => ( is => 'ro',
                     default => undef,
                 );
+
+my @nochecksum_fields = qw( lastupdate
+                            status_since
+                            status_count
+                            wubot_rulelog
+                            mailbox
+                            coalesce
+                           );
 
 
 =head1 SUBROUTINES/METHODS
@@ -377,7 +385,15 @@ sub checksum {
 
     return unless $message;
 
-    my $text = YAML::XS::Dump $message;
+    # ensure that the same original event message gets the same
+    # checksum.  this means we need to ignore some fields like
+    # 'lastupdate' time when generating the checksums.
+    my $data = { %$message };
+    for my $field ( @nochecksum_fields ) {
+        delete $data->{$field};
+    }
+
+    my $text = YAML::XS::Dump $data;
 
     utf8::encode( $text );
 

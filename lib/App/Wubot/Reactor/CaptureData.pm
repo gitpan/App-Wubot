@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::CaptureData;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 # todo: enable using Regexp::Common regexps here
 
@@ -22,11 +22,13 @@ sub react {
         $regexp = $config->{regexp};
     }
 
-    $field_data =~ m|$regexp|s;
-
     my $target_field = $config->{target_field} || $config->{field} || $config->{source_field};
 
-    $message->{ $target_field } = $1;
+    if ( $field_data =~ m|$regexp|s ) {
+        if ( $1 ) {
+            $message->{ $target_field } = $1;
+        }
+    }
 
     return $message;
 }
@@ -45,7 +47,7 @@ App::Wubot::Reactor::CaptureData - capture data from a field using a regexp
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 

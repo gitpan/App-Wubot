@@ -1,7 +1,7 @@
 package App::Wubot::Config;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use Sys::Hostname qw();
 use YAML::XS;
@@ -73,7 +73,7 @@ sub read_config {
 
             my $instance_count = 0;
 
-          INSTANCES:
+          INSTANCE:
             while ( defined( my $instance_entry = readdir( $instance_dir_h ) ) ) {
                 next unless $instance_entry;
 
@@ -92,6 +92,7 @@ sub read_config {
                     1;
                 } or do {                       # catch
                     $self->logger->fatal( "ERROR loading: $plugin_dir/$instance_entry\n$@" );
+                    next INSTANCE;
 
                 };
 
@@ -163,7 +164,7 @@ App::Wubot::Config - read wubot plugin configuration
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 

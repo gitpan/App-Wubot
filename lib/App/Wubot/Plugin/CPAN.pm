@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::CPAN;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -132,7 +132,7 @@ App::Wubot::Plugin::CPAN - verify that the latest versions of all Perl modules a
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 
@@ -166,6 +166,12 @@ By default it will use the first 'perl' in the path, although you can
 set the perl path (see the example above).  This makes it possible to
 configure multiple monitors per host if there is more than one perl
 installation you want to monitor.
+
+To upgrade all the perl modules that have newer versions available,
+use the command:
+
+  perl -MCPAN -e 'CPAN::Shell->install(CPAN::Shell->r)'
+
 
 =head1 SUBROUTINES/METHODS
 

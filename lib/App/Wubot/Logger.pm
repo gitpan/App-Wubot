@@ -2,7 +2,7 @@ package App::Wubot::Logger;
 use strict;
 use warnings;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use Log::Log4perl qw(:easy);
 
@@ -15,7 +15,7 @@ App::Wubot::Logger - wubot logging library
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 

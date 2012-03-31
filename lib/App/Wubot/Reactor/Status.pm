@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Status;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use YAML::XS;
 
@@ -62,6 +62,10 @@ my $phi = 0.5 + 0.5 * sqrt(5.0);
 sub react {
     my ( $self, $message, $config ) = @_;
 
+    if ( $message->{status} && $message->{status_count} ) {
+        return $message;
+    }
+
     unless ( $message->{status}              ) { $message->{status} = "OK" }
     unless ( $statuses{ $message->{status} } ) { return $message           }
 
@@ -99,8 +103,8 @@ sub react {
             $message->{subject} = join( " ", $message->{subject}, "[$message->{status_count}x $message->{status}]" );
         }
         else {
-            $message->{status_subject} = $message->{subject};
-            delete $message->{subject};
+            $message->{quiet} = 1;
+            $message->{suppress} = 1;
         }
     }
 
@@ -147,7 +151,7 @@ App::Wubot::Reactor::Status - keep track of check statuses
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 

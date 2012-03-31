@@ -1,7 +1,7 @@
 package App::Wubot::SQLite;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use Capture::Tiny;
 use DBI;
@@ -20,7 +20,7 @@ App::Wubot::SQLite - the wubot library for working with SQLite
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 
@@ -302,7 +302,7 @@ sub insert {
     my $insert;
     for my $field ( keys %{ $schema } ) {
         next if $field eq "constraints";
-        next if $field eq "id";
+        next if $field eq "id" && $schema->{id} && $schema->{id} =~ m|AUTOINCREMENT|;
         $insert->{ $field } = $entry->{ $field };
     }
 
@@ -355,7 +355,7 @@ sub update {
     my $insert;
     for my $field ( keys %{ $schema } ) {
         next if $field eq "constraints";
-        next if $field eq "id";
+        next if $field eq "id" && $schema->{id} && $schema->{id} =~ m|AUTOINCREMENT|;
         next unless exists $update->{ $field };
         $insert->{ $field } = $update->{ $field };
     }
@@ -455,11 +455,16 @@ sub select {
 
     my $callback  = $options->{callback};
 
-    if ( $group && $group =~ m|([\w\d]+)| ) {
-        $tablename .= " GROUP BY $group";
-    }
-
     my( $statement, @bind ) = $self->sql_abstract->select( $tablename, $fields, $where, $order );
+
+    if ( $group && $group =~ m|([\w\d]+)| ) {
+        if ( $statement =~ m|ORDER| ) {
+            $statement =~ s|ORDER|GROUP BY $group ORDER|;
+        }
+        else {
+            $statement .= " GROUP BY $group";
+        }
+    }
 
     if ( $limit && $limit =~ m|(\d+)| ) {
         $statement .= " LIMIT $1";
@@ -476,7 +481,7 @@ sub select {
         $rv = $sth->execute(@bind);
         1;
     } or do {
-        $self->logger->logcroak( "can't execute the query: $statement: $@" );
+        $self->logger->logcroak( "can't execute the query: $statement: $@ file=", $self->file );
     };
 
     my @entries;

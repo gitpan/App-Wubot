@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Dumper;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use YAML::XS;
 
@@ -43,7 +43,7 @@ App::Wubot::Reactor::Dumper - display the contents of a field or an entire messa
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 
@@ -63,9 +63,9 @@ intended as a debugging tool, e.g. to see how a message looks at some
 point in the rule tree.
 
 If no configuration is specified, then the entire message will be
-displayed to stdout using YAML::Dump.  If a field is specified in the
-config, then the contents of that field will be dumped using
-YAML::Dump.
+displayed to stdout using YAML::XS::Dump.  If a field is specified in
+the config, then the contents of that field will be dumped using
+YAML::XS::Dump.
 
 =head1 SUBROUTINES/METHODS
 

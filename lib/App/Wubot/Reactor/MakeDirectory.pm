@@ -1,9 +1,10 @@
 package App::Wubot::Reactor::MakeDirectory;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use File::Path;
+use YAML::XS;
 
 use App::Wubot::Logger;
 
@@ -19,7 +20,7 @@ sub react {
     my ( $self, $message, $config ) = @_;
 
     unless ( $config->{field} ) {
-        $self->logger->error( "ERROR: MakeDirectory: field not defined in config", YAML::Dump $config );
+        $self->logger->error( "ERROR: MakeDirectory: field not defined in config", YAML::XS::Dump $config );
         return $message;
     }
 
@@ -55,7 +56,7 @@ App::Wubot::Reactor::MakeDirectory - create a subdirectory
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 DESCRIPTION
 

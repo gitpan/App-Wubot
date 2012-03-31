@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::Uptime;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -49,11 +49,11 @@ sub check {
 
     my $subject;
     my $status = 'OK';
-    if ( $inputs->{config}->{critical_load} && $load01 > $inputs->{config}->{critical_load} ) {
-        $subject = "critical: load over last 1 minute is $load01 ";
+    if ( $inputs->{config}->{critical_load} && $load05 > $inputs->{config}->{critical_load} ) {
+        $subject = "critical: load over last 5 minutes is $load01";
         $status = 'CRITICAL';
-    } elsif ( $inputs->{config}->{warning_load} && $load01 > $inputs->{config}->{warning_load} ) {
-        $subject = "warning: load over last 1 minute is $load01 ";
+    } elsif ( $inputs->{config}->{warning_load} && $load05 > $inputs->{config}->{warning_load} ) {
+        $subject = "warning: load over last 5 minute is $load05";
         $status = 'WARNING';
     }
 
@@ -94,7 +94,7 @@ App::Wubot::Plugin::Uptime - monitor system load
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::Directory;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -73,7 +73,7 @@ App::Wubot::Plugin::Directory - monitor a directory for new files
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 

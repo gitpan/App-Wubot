@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl -w
 use strict;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use AnyEvent::Watchdog autorestart => 1, heartbeat => 300;
 
@@ -21,11 +21,13 @@ my $logger = Log::Log4perl::get_logger( 'default' );
 
 use App::Wubot::Config;
 use App::Wubot::Reactor;
-#use App::Wubot::Reactor::Voice;
 use App::Wubot::LocalMessageStore;
 use App::Wubot::Util::TimeLength;
+use App::Wubot::WubotX;
 
-#my $voice = App::Wubot::Reactor::Voice->new();
+# load plugin library paths
+my $wubotx = App::Wubot::WubotX->new();
+$wubotx->get_plugins();
 
 my $message_directory = "$ENV{HOME}/wubot/reactor";
 
@@ -187,7 +189,7 @@ __END__
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 

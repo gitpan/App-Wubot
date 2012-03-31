@@ -1,7 +1,7 @@
 package App::Wubot::Util::WebFetcher;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use HTTP::Message;
 use LWP::UserAgent;
@@ -23,7 +23,7 @@ App::Wubot::Util::WebFetcher - fetch content from the web
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 
@@ -98,6 +98,17 @@ The proxy URL.
 
 If true, sets the Accept-Encoding using HTTP::message::decodable.
 
+=item ignore_cert_errors
+
+If true, do not perform SSL certificate validation for https URLs.
+
+=item ca_file
+
+If you have a custom SSL CA file for this monitor, set the path using
+this parameter.  If you want to use the same ca file for all monitors,
+it is probably better to set the path using either the environment
+variable PERL_LWP_SSL_CA_FILE or HTTPS_CA_FILE.
+
 =back
 
 =cut
@@ -124,6 +135,22 @@ sub fetch {
     if ( $config->{proxy} ) {
         $ua->proxy(['http'],  $config->{proxy} );
         $ua->proxy(['https'], $config->{proxy} );
+    }
+
+    if ( $config->{ignore_cert_errors} ) {
+        $self->logger->debug( "Disabling certificate verification" );
+        $ua->ssl_opts( verify_hostname => 0 )
+    }
+
+    if ( $config->{ca_file} ) {
+        $self->logger->debug( "Setting custom ca file: $config->{ca_file}" );
+        $ua->ssl_opts( SSL_ca_file => $config->{ca_file} )
+    }
+
+    if ( $config->{use_cookies} ) {
+        use HTTP::Cookies;
+        my $cookie_jar = HTTP::Cookies->new;
+        $ua->cookie_jar($cookie_jar);
     }
 
     my $req;

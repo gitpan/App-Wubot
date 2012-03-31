@@ -1,26 +1,33 @@
 <style type="text/css">
 
 body {
-    background-color: #333333;
-    color: #cccccc;
-    font-size: small;
+  padding : 2px;
+  margin : 2px;
+  width : 100%;
+  height : 100%;
+  font-style: normal;
+  font-variant: normal;
+  font-size: 10;
+  font-weight: normal;
+  font-family: Anonymous Pro,Monaco,monospace;
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+  background-color: #333333;
+  color: #cccccc;
 }
 
 a {
-  color: #cccccc;
+  color: #aaaacc;
   text-decoration: none;
 }
 
-input {
-  color: #cccccc;
-}
 
 textarea {
   color: #cccccc;
 }
 
 table {
-  font-size: small;
+  font-size: 10;
   border-spacing: 0;
   border-collapse: collapse;
 }
@@ -33,10 +40,9 @@ td {
   border-width: 1px 0px 0 0;
   border-style: solid;
   margin: 0;
-  padding: 4px;
+  padding: 3px;
   color: #cccccc;
 }
-
 
 th {
   background-color: purple;
@@ -62,7 +68,7 @@ th.key, th.username {
   width: 10%
 }
 th.subject {
-  width: 60%;
+  width: 50%;
 }
 th.priority {
   width: 5%;
@@ -71,9 +77,23 @@ th.scheduled, th.deadline, th.lastupdate {
   width: 12%;
 }
 
-pre {
-	font-size: 12px;
-    font-family: Monaco;
+td.body {
+  font-size: 10;
+  font-family: Monaco,monospace;
+}
+
+input {
+  color: #cccccc;
+  border: 1px solid black;
+  height: 1.5em;
+  font-size: 10;
+  font-family: Anonymous Pro,Monaco,monospace;
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+  margin-top: -.5em;
+  margin-bottom: -.5em;
+  padding-top: -.5em;
+  padding-bottom: -.5em;
 }
 
 </style>

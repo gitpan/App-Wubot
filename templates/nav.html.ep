@@ -1,14 +1,28 @@
+% use POSIX qw(strftime);
 
-  <font size="-1" color="#FF00FF">
+  <font color="#FF00FF">
     |
     <a href="/notify">notify</a>
     |
     <a href="/tags">tags</a>
     |
+    <a href="/taskbot/list?scheduled=true&task_status=todo&category=">schedule</a>
+    |
+    <a href="/taskbot/list?scheduled=false&task_status=todo&category=">todo</a>
+    |
+    <a href="/taskbot/new">newtask</a>
+    |
     <a href="/tasks">tasks</a>
+    |
+    <a href="/contacts/list">contacts</a>
+    |
+    <a href="/tivo/list">tivo</a>
     |
     <a href="/graphs">graphs</a>
     |
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <%= strftime( '%a %b %d %l:%M %p', localtime( time ) ); %>
+    |
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
   </font>
 

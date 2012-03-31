@@ -1,9 +1,10 @@
 package App::Wubot::Reactor;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use Class::Load qw/load_class/;
+use Sys::Hostname qw//;
 
 use App::Wubot::Logger;
 use App::Wubot::Conditions;
@@ -15,7 +16,7 @@ App::Wubot::Reactor - runs reactive rules on a message
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 
@@ -65,6 +66,12 @@ has 'conditions' => ( is => 'ro',
                       }
                   );
 
+# global cache for external rules file contents.  this is shared
+# between all objects.
+my $cache;
+
+my $hostname = Sys::Hostname::hostname();
+$hostname =~ s|\..*$||;
 
 =head1 SUBROUTINES/METHODS
 
@@ -114,8 +121,36 @@ sub react {
 
         $self->logger->debug( " " x $depth, "- rule matched: $rule->{name}" );
 
+        eval {
+            push @{ $message->{wubot_rulelog}->{$hostname} }, $rule->{name};
+        };
+
         if ( $rule->{rules} ) {
             $self->react( $message, $rule->{rules}, $depth+1 );
+        }
+
+        if ( $rule->{rulesfile} || $rule->{rulesfile_field} ) {
+
+            my $rulesfile;
+            if ( $rule->{rulesfile} ) {
+                $rulesfile = $rule->{rulesfile};
+            }
+            elsif ( $rule->{rulesfile_field} ) {
+                $rulesfile = $message->{ $rule->{rulesfile_field} };
+                unless ( $rulesfile ) {
+                    $self->logger->error( "ERROR: rulesfile_field $rule->{rulesfile_field} not found on message" );
+                    next RULE;
+                }
+            }
+
+            my $got_rules = $self->get_rulesfile( $rulesfile );
+            unless ( $got_rules ) {
+                $self->logger->error( "ERROR: unable to load rules from: $rulesfile" );
+                next RULE;
+            }
+
+            $self->logger->debug( "Processing rules in $rulesfile" );
+            $self->react( $message, $got_rules, $depth+1 );
         }
 
         if ( $rule->{plugin} ) {
@@ -129,6 +164,40 @@ sub react {
     }
 
     return $message;
+}
+
+=item get_rulesfile
+
+Reads an external rules file.  The results are stored in the global
+rules cache.
+
+Each time this method is called, the modified time will be checked.
+If the file has been changed, then the file will be re-read.
+
+=cut
+
+sub get_rulesfile {
+    my ( $self, $rulesfile ) = @_;
+
+    my $mtime = ( stat $rulesfile )[9];
+
+    if ( $cache->{ $rulesfile } ) {
+        if ( $cache->{ $rulesfile }->{mtime} == $mtime ) {
+            return $cache->{ $rulesfile }->{rules};
+        }
+
+        $self->logger->info( "Re-reading modified rules file: $rulesfile" );
+    }
+
+    $self->logger->warn( "Loading rules file: $rulesfile" );
+
+    my $rules = YAML::XS::LoadFile( $rulesfile );
+
+    $cache->{ $rulesfile }->{rules} = $rules->{rules};
+    $cache->{ $rulesfile }->{mtime} = $mtime;
+    $self->logger->debug( "Loaded rules file into cache" );
+
+    return $rules->{rules};
 }
 
 

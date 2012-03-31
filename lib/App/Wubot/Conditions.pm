@@ -1,7 +1,7 @@
 package App::Wubot::Conditions;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
 
 use Scalar::Util qw/looks_like_number/;
 
@@ -14,7 +14,7 @@ App::Wubot::Conditions - evaluation conditions on reactor rules
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 

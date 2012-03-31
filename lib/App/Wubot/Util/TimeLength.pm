@@ -1,7 +1,10 @@
 package App::Wubot::Util::TimeLength;
 use Moose;
 
-our $VERSION = '0.3.10'; # VERSION
+our $VERSION = '0.4.0'; # VERSION
+
+use POSIX;
+use YAML::XS;
 
 use App::Wubot::Logger;
 
@@ -12,7 +15,7 @@ App::Wubot::Util::TimeLength - utilities for dealing with time durations
 
 =head1 VERSION
 
-version 0.3.10
+version 0.4.0
 
 =head1 SYNOPSIS
 
@@ -61,6 +64,20 @@ my $constants = { s => 1,
                   y => 60*60*24*365,
               };
 
+# my $colorfile = join( "/", $ENV{HOME}, "wubot", "config", "colors.yaml" );
+# my $config = YAML::XS::LoadFile( $colorfile );
+# my $colors;
+# for my $key ( qw( s m h d w M y ) ) {
+#     next unless $config->{$key\\\\};
+
+#     my @rgb = map { hex($_) } unpack 'a2a2a2', $hex;
+
+
+# }
+# #    my $hex = 
+# #    $colors->{$key} = [ split /,/, $config->{ages}->{$key} ];
+# }
+
 =head1 SUBROUTINES/METHODS
 
 =over 8
@@ -76,6 +93,8 @@ sub get_seconds {
     my ( $self, $time ) = @_;
 
     my $seconds = 0;
+
+    return $seconds unless $time;
 
     $time =~ s|^\+||;
 
@@ -126,6 +145,7 @@ sub get_human_readable {
 
     my $seconds = $self->get_seconds( $time );
     my $orig_seconds = $seconds;
+    my $abs_seconds  = abs( $seconds );
 
     return '0s' unless $seconds;
 
@@ -141,13 +161,13 @@ sub get_human_readable {
     for my $time ( qw( y M w d h m s ) ) {
 
         if ( $time eq "s" ) {
-            next TIME if $orig_seconds > $constants->{h};
+            next TIME if $abs_seconds > $constants->{h};
         }
         elsif ( $time eq "m" ) {
-            next TIME if $orig_seconds > $constants->{d};
+            next TIME if $abs_seconds > $constants->{d};
         }
         elsif ( $time eq "h" ) {
-            next TIME if $orig_seconds > $constants->{w};
+            next TIME if $abs_seconds > $constants->{w};
         }
 
         my $num_seconds = $constants->{ $time };
@@ -219,11 +239,17 @@ sub get_age_color {
     #                'y' => [ 200,   0,   0,    0,   0,   0, 2 ],
     #            };
 
-    my $colors = { 'h' => [ 255,   0, 255,  108, 113, 196    ],
-                   'd' => [ 108, 113, 196,   38, 139, 210    ],
-                   'w' => [  38, 139, 210,  133, 153,   0    ],
-                   'M' => [ 133, 153,   0,  181, 137,   0    ],
-                   'y' => [ 181, 137,   0,  220,  50,  47, 2 ],
+    # my $colors = { 'h' => [ 102,   0,  77,   54,  56,  98    ],
+    #                'd' => [  54,  56,  98,   19,  69, 105    ],
+    #                'w' => [  19,  69, 105,   66,  77,   0    ],
+    #                'M' => [  66,  76,   0,  110,  25,  23    ],
+    #                'y' => [  50,  50,  50,    0,   0,   0, 2 ],
+
+    my $colors = { 'h' => [ 114,0,122, 40,0,122 ],
+                   'd' => [ 0,27,122,  0, 102, 102 ],
+                   'w' => [ 0, 102, 102,  66, 133, 0 ],
+                   'M' => [ 66,133,0, 153,102,0 ],
+                   'y' => [ 153,102,0, 0,0,0, 2 ],
                };
 
     my $previous = 0;
