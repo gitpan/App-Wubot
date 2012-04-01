@@ -1,7 +1,7 @@
 package App::Wubot::Util::TimeLength;
 use Moose;
 
-our $VERSION = '0.4.0'; # VERSION
+our $VERSION = '0.4.1'; # VERSION
 
 use POSIX;
 use YAML::XS;
@@ -15,7 +15,7 @@ App::Wubot::Util::TimeLength - utilities for dealing with time durations
 
 =head1 VERSION
 
-version 0.4.0
+version 0.4.1
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,7 @@
 package App::Wubot::Obj::Roles::Obj;
 use Moose::Role;
 
-our $VERSION = '0.4.0'; # VERSION
+our $VERSION = '0.4.1'; # VERSION
 
 use Date::Manip;
 use HTML::Strip;

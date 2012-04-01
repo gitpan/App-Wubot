@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::Roles::Cache;
 use Moose::Role;
 
-our $VERSION = '0.4.0'; # VERSION
+our $VERSION = '0.4.1'; # VERSION
 
 use YAML::XS;
 
@@ -13,7 +13,7 @@ App::Wubot::Plugin::Roles::Cache - role for plugins that need to cache data betw
 
 =head1 VERSION
 
-version 0.4.0
+version 0.4.1
 
 =head1 SYNOPSIS
 

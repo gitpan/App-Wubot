@@ -67,4 +67,4 @@ requires:
   warnings: 0
 resources:
   repository: http://github.com/wu/wubot
-version: 0.4.0
+version: 0.4.1

@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::CPAN;
 use Moose;
 
-our $VERSION = '0.4.0'; # VERSION
+our $VERSION = '0.4.1'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -132,7 +132,7 @@ App::Wubot::Plugin::CPAN - verify that the latest versions of all Perl modules a
 
 =head1 VERSION
 
-version 0.4.0
+version 0.4.1
 
 =head1 SYNOPSIS
 

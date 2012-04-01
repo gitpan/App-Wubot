@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::FirefoxBookmarks;
 use Moose;
 
-our $VERSION = '0.4.0'; # VERSION
+our $VERSION = '0.4.1'; # VERSION
 
 use YAML::XS;
 
@@ -80,7 +80,7 @@ App::Wubot::Plugin::FirefoxBookmarks - monitor for new firefox bookmarks
 
 =head1 VERSION
 
-version 0.4.0
+version 0.4.1
 
 =head1 DESCRIPTION
 

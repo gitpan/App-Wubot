@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::FileTail;
 use Moose;
 
-our $VERSION = '0.4.0'; # VERSION
+our $VERSION = '0.4.1'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::Util::Tail;
@@ -97,7 +97,7 @@ App::Wubot::Plugin::FileTail - monitor a log file for all new lines
 
 =head1 VERSION
 
-version 0.4.0
+version 0.4.1
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,7 @@
 package App::Wubot::Reactor;
 use Moose;
 
-our $VERSION = '0.4.0'; # VERSION
+our $VERSION = '0.4.1'; # VERSION
 
 use Class::Load qw/load_class/;
 use Sys::Hostname qw//;
@@ -16,7 +16,7 @@ App::Wubot::Reactor - runs reactive rules on a message
 
 =head1 VERSION
 
-version 0.4.0
+version 0.4.1
 
 =head1 SYNOPSIS
 

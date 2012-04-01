@@ -1,7 +1,7 @@
 package App::Wubot::Util::WebFetcher;
 use Moose;
 
-our $VERSION = '0.4.0'; # VERSION
+our $VERSION = '0.4.1'; # VERSION
 
 use HTTP::Message;
 use LWP::UserAgent;
@@ -23,7 +23,7 @@ App::Wubot::Util::WebFetcher - fetch content from the web
 
 =head1 VERSION
 
-version 0.4.0
+version 0.4.1
 
 =head1 SYNOPSIS
 
