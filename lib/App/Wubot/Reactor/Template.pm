@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Template;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use Text::Template;
 
@@ -67,7 +67,7 @@ App::Wubot::Reactor::Template - build a field using existing message fields as a
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,7 @@
 package App::Wubot::Check;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use Benchmark;
 use Class::Load;
@@ -19,7 +19,7 @@ App::Wubot::Check - perform checks for an instance of a monitor
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 
@@ -145,7 +145,7 @@ sub init {
 
     return unless $self->instance->can( 'init' );
 
-    my $cache = $self->instance->get_cache();
+    my $cache = $self->instance->read_cache();
 
     my $results = $self->instance->init( { config => $config, cache => $cache } );
 
@@ -186,7 +186,7 @@ completes and the reactor has processed any messages.
 sub check {
     my ( $self, $config ) = @_;
 
-    my $cache = $self->instance->get_cache() || {};
+    my $cache = $self->instance->read_cache() || {};
 
     $self->logger->debug( "calling check for instance: ", $self->key );
 
@@ -216,12 +216,12 @@ sub check {
         my $message;
 
         if ( $error eq "alarm\n" ) {
-            $self->logger->error( "Timed out after $timeout seconds for check: ", $self->key );
+            $self->logger->debug( "Timed out after $timeout seconds for check: ", $self->key );
             $message->{subject} = "Timed out after $timeout seconds";
         }
         else {
             my $key = $self->key;
-            $self->logger->error( "CRITICAL: $key: $error" );
+            $self->logger->debug( "CRITICAL: $key: $error" );
             $message->{subject} = "CRITICAL: $error";
         }
 

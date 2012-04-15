@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::WebMatches;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::Util::WebFetcher;
@@ -73,7 +73,7 @@ sub check {
     $self->cache_expire( $cache );
 
     unless ( $count ) {
-        $self->logger->logdie( "ERROR: no matches found" );
+        die "ERROR: no matches found";
     }
 
     return { react => \@react, cache => $cache };
@@ -93,7 +93,7 @@ App::Wubot::Plugin::WebMatches - monitor a web page for items matching a regexp
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 

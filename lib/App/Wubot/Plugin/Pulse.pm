@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::Pulse;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use POSIX qw(strftime);
 
@@ -15,52 +15,70 @@ sub check {
 
     my @messages;
 
-    my $cache = $inputs->{cache};
+    my $cache = $inputs->{cache} || {};
 
     my $now = $inputs->{now} || time;
 
     my $lastupdate = $cache->{lastupdate} || $now;
 
-    # the number of minutes that have occurred on the clock since the
-    # last notification.
+    # defaults to 1 week, 60 * 24 * 7 = 10080
+    my $maxpulses = $inputs->{config}->{max_pulses} || 10080;
+
+    # number of seconds past the current minute
     my $seconds = strftime( "%S", localtime( $now ) );
 
+    # minute
+    my $minute = strftime( "%M", localtime( $now ) );
+
+    if ( $cache->{lastminute} && $cache->{lastminute} eq $minute ) {
+        $self->logger->info( "Already sent a pulse this minute: $minute" );
+        my $delay = $self->_get_delay();
+        return { delay => $delay };
+    }
+    $cache->{lastminute} = $minute;
+
+    # the number of minutes that have occurred on the clock since the
+    # last notification.
+
     my $diff = $now - $lastupdate;
-    my $minutes_old = int( $diff / 60 );
-    $self->logger->debug( "minutes old: $minutes_old => $diff diff seconds, $seconds seconds past minute" );
+    my $minutes_passed = int( $diff / 60 );
+    $self->logger->debug( "minutes old: $minutes_passed => $diff diff seconds, $seconds seconds past minute" );
 
     my @minutes;
     if ( ! $cache->{lastupdate} ) {
         $self->logger->warn( "Pulse: no pulse cache data found, first pulse" );
         @minutes = ( 0 );
-        $minutes_old = 0;
+        $minutes_passed = 0;
     }
-    elsif ( $minutes_old ) {
-        if ( $minutes_old > 10 ) {
-            $self->logger->error( "Minutes since last pulse: $minutes_old" );
+    elsif ( $minutes_passed ) {
+        if ( $minutes_passed > 10 ) {
+            $self->logger->error( "Minutes since last pulse: $minutes_passed" );
         }
-        elsif ( $minutes_old > 1 ) {
-            $self->logger->info( "Minutes since last pulse: $minutes_old" );
+        elsif ( $minutes_passed > 1 ) {
+            $self->logger->info( "Minutes since last pulse: $minutes_passed" );
         }
-        @minutes = reverse ( 0 .. $minutes_old - 1 );
+
+        my $num_pulses = $minutes_passed > $maxpulses ? $maxpulses : $minutes_passed;
+        @minutes = reverse ( 0 .. $num_pulses - 1 );
 
         $self->logger->trace( "updating lastupdate to: ", scalar localtime $now );
     }
     else {
-        # we have already sent the pulse for this minute
-        @minutes = ();
+        # we have already sent my the pulse for this minute
+        @minutes = ( 0 );
     }
 
     # set the 'lastupdate' time to be the beginning of the current minute
     $cache->{lastupdate} = $now - $seconds;
 
     for my $age ( @minutes ) {
-
         my $pulse_time = $now - $age * 60;
 
         my $date = strftime( "%Y-%m-%d", localtime( $pulse_time ) );
 
         my $time = strftime( "%H:%M", localtime( $pulse_time ) );
+
+        #print "Pulse: $date: $time\n";
 
         my $weekday = lc( strftime( "%A", localtime( $pulse_time ) ) );
 
@@ -76,11 +94,19 @@ sub check {
         push @messages, $message;
     }
 
+    my $delay = $self->_get_delay();
+
+    return { react => \@messages, cache => $cache, delay => $delay };
+}
+
+sub _get_delay {
+    my ( $self ) = @_;
+
     # attempt to sync up pulses with the minute
     my $second = strftime( "%S", localtime() );
     my $delay = 60 - $second;
 
-    return { react => \@messages, cache => $cache, delay => $delay };
+    return $delay;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -97,7 +123,7 @@ App::Wubot::Plugin::Pulse - send a message once per minute
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 
@@ -150,6 +176,37 @@ late, then the 'age' field on the message will indicate the number of
 minutes old that the message was at the time it was generated.  If the
 'age' field is false, that indicates that the message was sent during
 the minute that was indicated on the message.
+
+There is also a 'max_pulses' config param that can be used to limit
+the maximum number of missed pulses that will be sent.  This is
+designed to prevent a massive flood of pulses (e.g. in the event that
+wubot had not been running for months and then is started back up).
+max_pulses defaults to 10080, which is 1 week's worth of pulses:
+
+  1 pulse/minute * 60 minutes/hour * 24 hours/day * 7 days = 10080 pulses
+
+=head1 SCHEDULED TASKS
+
+You can trigger a reaction to take place at a specific time by
+creating a rule that triggers from the pulse.  The reaction might be
+as simple as setting a 'subject' on the pulse message itself so that a
+notification occurs (assuming you have reactions set up to perform
+notifications for messages with subjects).
+
+  - name: hourly announcements
+    condition: key matches ^Pulse AND time matches :00 AND age < 60
+    plugin: Template
+    config:
+      template: the time is {$time}
+      target_field: subject
+
+Notice that the condition contains an 'age' field--this is because a
+pulse is guaranteed to be delivered for every minute, even if wubot
+has not been running for a few days.  Without this condition, if you
+start up wubot after it has not been running for a while (or enable
+the pulse plugin after it has been disabled for a while) it will spam
+you with a notification for every hour since the plugin last ran.
+With the condition
 
 
 =head1 SUBROUTINES/METHODS

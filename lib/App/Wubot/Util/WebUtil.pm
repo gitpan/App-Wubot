@@ -1,7 +1,7 @@
 package App::Wubot::Util::WebUtil;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 #use Mojo::Base 'Mojolicious::Controller';
 
@@ -12,7 +12,7 @@ App::Wubot::Util::WebUtil - under construction
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 

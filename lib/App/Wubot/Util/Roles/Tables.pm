@@ -1,7 +1,7 @@
 package App::Wubot::Util::Roles::Tables;
 use Moose::Role;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::SQLite;
@@ -13,7 +13,7 @@ App::Wubot::Util::Roles::Tables - under construction
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 

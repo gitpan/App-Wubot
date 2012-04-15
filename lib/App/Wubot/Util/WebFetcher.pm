@@ -1,7 +1,7 @@
 package App::Wubot::Util::WebFetcher;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use HTTP::Message;
 use LWP::UserAgent;
@@ -23,7 +23,7 @@ App::Wubot::Util::WebFetcher - fetch content from the web
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 
@@ -137,6 +137,10 @@ sub fetch {
         $ua->proxy(['https'], $config->{proxy} );
     }
 
+    if ( $config->{socks_proxy} ) {
+        $ua->proxy(['socks'],  $config->{socks_proxy} );
+    }
+
     if ( $config->{ignore_cert_errors} ) {
         $self->logger->debug( "Disabling certificate verification" );
         $ua->ssl_opts( verify_hostname => 0 )
@@ -170,7 +174,7 @@ sub fetch {
 
     unless ( $res->is_success ) {
         my $results = $res->status_line || "no error text";
-        $self->logger->logdie( "Failure Fetching Content: $results" );
+        die "Failure Fetching Content: $results";
     }
 
     my $content = $res->decoded_content;

@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Console;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use POSIX qw(strftime);
 use Sys::Hostname qw();
@@ -94,7 +94,7 @@ App::Wubot::Reactor::Console - display a notification to stdout
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 

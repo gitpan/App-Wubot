@@ -1,7 +1,7 @@
 package App::Wubot::WubotX;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use YAML::XS;
 
@@ -38,7 +38,7 @@ App::Wubot::WubotX - WubotX extensions manager
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,7 @@
 package App::Wubot::Reactor;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use Class::Load qw/load_class/;
 use Sys::Hostname qw//;
@@ -16,7 +16,7 @@ App::Wubot::Reactor - runs reactive rules on a message
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 
@@ -122,7 +122,7 @@ sub react {
         $self->logger->debug( " " x $depth, "- rule matched: $rule->{name}" );
 
         eval {
-            push @{ $message->{wubot_rulelog}->{$hostname} }, $rule->{name};
+            push @{ $message->{wubot_rulelog} }, join( ":", $hostname, $rule->{name} );
         };
 
         if ( $rule->{rules} ) {

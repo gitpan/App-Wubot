@@ -5,6 +5,9 @@
     <script type='text/javascript' src='/sort/common.js'></script>
     <script type='text/javascript' src='/sort/css.js'></script>
     <script type='text/javascript' src='/sort/standardista-table-sorting.js'></script>
+    <link rel="stylesheet" type="text/css" href="/jquery/jquery-ui-1.8.18.uidarkness.css" />
+    <script type="text/javascript" src="/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="/jquery/jquery-ui-1.8.18.uidarkness.min.js"></script>
     <%= include 'css' %>
   </head>
   <body bgcolor="#073642">
@@ -39,13 +42,13 @@
     <table width='100%'>
       <tr valign='top'>
 
-        <td width='50' class="categories">
-          <table>
-            <% for my $category ( @{ $categories } ) { %>
-              <tr bgcolor='<%= $category->{color} %>'><td><a href='/taskbot/list?category=<%= $category->{category} %>&scheduled=any&task_status=todo'><%= $category->{category} %></a></td><td><%= $category->{count} %></td></tr>
-            <% } %>
-          </table>
-        </td>
+        <!-- <td width='50' class="categories"> -->
+        <!--   <table> -->
+        <!--     <% for my $category ( @{ $categories } ) { %> -->
+        <!--       <tr bgcolor='<%= $category->{color} %>'><td><a href='/taskbot/list?category=<%= $category->{category} %>&scheduled=any&task_status=todo'><%= $category->{category} %></a></td><td><%= $category->{count} %></td></tr> -->
+        <!--     <% } %> -->
+        <!--   </table> -->
+        <!-- </td> -->
 
         <td>
 
@@ -73,9 +76,10 @@
           <% unless ( $item->scheduled ) { $undated = 1 }; %>
           <% $count++; %>
 
+          <% if ( $item->{scheduled} ) {  %>
           <% my $date =  strftime( '%Y-%m-%d %a', localtime( $item->scheduled ) ); %>
 
-          <% if ( $before && $item->scheduled > $now ) { %>
+          <% if ( $before && $item->scheduled && $item->scheduled > $now ) { %>
 
             <% if ( $before && $count == 1 ) { %>
               <% $before = 0; %>
@@ -127,7 +131,8 @@
             </tr>
             <% $last_date = $date; %>
           <% } %>
-          
+          <% } %>
+
         <tr height=10 bgcolor="<%= $item->display_color %>">
 
           <td align="right" bgcolor="<%= $item->timer_color %>" width='10%'><%==  $item->timer_display %></td>
@@ -144,8 +149,8 @@
           <td width='1%'><% if ( $item->has_body ) { %><a href='/taskbot/edit/<%= $item->taskid %>'>-&gt;</a> <% } %> </td>
           <td width='1%'><% if ( $item->link ) { %><a href='<%= $item->link %>'>(*)</a><% } %></td>
           <td width='3%'><%== $item->priority_display %></td>
-          <td width='2%' bgcolor="<%= $item->recurrence_color %>" width='1%'><%= $item->recurrence %></td>
-          <td width='7% align='center' width='6%' bgcolor="<%= $item->lastdone_color %>"><% if ( $item->lastdone ) { %> [<%=  $item->lastdone_age %>] <% } %> </td>
+          <td width='2%' width='1%'><%= $item->recurrence %></td>
+          <td width='7%' align='center' width='6%'><% if ( $item->lastdone ) { %> [<%=  $item->lastdone_age %>] <% } %> </td>
           <td align="center" width='10%'><a href="/taskbot/list?category=<%= $item->category %>&scheduled=any"><%= $item->category %></a></td>
           <td align='right' width='6%' bgcolor="<%= $item->lastupdate_color %>"><%=  $item->age %></td>
 
@@ -163,5 +168,18 @@
 
     <input type="image" src="/images/wubot.png" border=0 height=32 width=32 alt="submit">
     </form>
+    <script>
+ 		$(document).ready(function(){
+			$( 'input[name*="scheduled"]' ).datepicker({ dateFormat: 'yy-mm-dd', constrainInput:false });
+   			$("tr").hover( 
+     			function() {  // mouseover 
+          			$(this).addClass('highlight'); 
+     			}, 
+     			function() {  // mouseout 
+          			$(this).removeClass('highlight'); 
+     			} 
+   			);
+		});
+	</script>
   </body>
 </html>

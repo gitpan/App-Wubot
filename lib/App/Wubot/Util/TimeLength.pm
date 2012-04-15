@@ -1,7 +1,7 @@
 package App::Wubot::Util::TimeLength;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use POSIX;
 use YAML::XS;
@@ -15,7 +15,7 @@ App::Wubot::Util::TimeLength - utilities for dealing with time durations
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 
@@ -168,6 +168,12 @@ sub get_human_readable {
         }
         elsif ( $time eq "h" ) {
             next TIME if $abs_seconds > $constants->{w};
+        }
+        elsif ( $time eq "d" ) {
+            next TIME if $abs_seconds > $constants->{M};
+        }
+        elsif ( $time eq "w" ) {
+            next TIME if $abs_seconds > $constants->{y};
         }
 
         my $num_seconds = $constants->{ $time };

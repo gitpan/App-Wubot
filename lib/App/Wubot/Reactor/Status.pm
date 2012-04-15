@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Status;
 use Moose;
 
-our $VERSION = '0.4.1'; # VERSION
+our $VERSION = '0.4.2'; # VERSION
 
 use YAML::XS;
 
@@ -151,7 +151,7 @@ App::Wubot::Reactor::Status - keep track of check statuses
 
 =head1 VERSION
 
-version 0.4.1
+version 0.4.2
 
 =head1 SYNOPSIS
 
