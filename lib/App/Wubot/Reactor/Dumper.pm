@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Dumper;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use YAML::XS;
 
@@ -43,7 +43,7 @@ App::Wubot::Reactor::Dumper - display the contents of a field or an entire messa
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

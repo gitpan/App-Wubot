@@ -75,17 +75,16 @@ them, check out the WubotX project into ~/wubot/WubotX
 Alternately you could check out WUbotX to another directory and
 symlink to ~/wubot/WubotX.
 
-When starting one of the wubot processes, you'll see a warning as it
-finds and enables each WubotX extension.  The libraries in these
-extensions are not actually being used yet--they have simply had their
-library paths added to @INC.  The libraries will only really be used
-if your monitor or reactor config references one of the libraries in
-one of the extensions.  That being said, if you wanted to selectively
-disable/remove some of the WubotX extensions, then you could remove
-directories you do not want from the WubotX directory.  Alternately
-you could make the directory ~/wubot/WubotX, then check out WUbotX to
-some other location, and then selectively symlink just the WubotX
-subdirectories that you want to enable into ~/wubot/WubotX.
+When starting one of the wubot processes, the libraries in these
+extensions directories have their library paths added to @INC.  The
+libraries will only really be used if your monitor or reactor config
+references one of the libraries in one of the extensions.  That being
+said, if you wanted to selectively disable/remove some of the WubotX
+extensions, then you could remove directories you do not want from the
+WubotX directory.  Alternately you could make the directory
+~/wubot/WubotX, then check out WUbotX to some other location, and then
+selectively symlink just the WubotX subdirectories that you want to
+enable into ~/wubot/WubotX.
   
 In addition, you may need to copy schemas from the WubotX directories:
 
@@ -96,6 +95,12 @@ and available on CPAN, but for the near future they will be available
 on github.  Sorry for the difficulty--this is still a work in
 progress.
 
+Most of the paths in wubot have not been configurable, e.g. ~/wubot.
+In version 0.5.0, ~/.wubotrc has been introduced to allow the paths to
+be configured.  If the file does not exist, it will automatically be
+created and populated with default values and comments.  Note that
+most of the WubotX extensions don't make use of this yet, so please do
+not change any of the default values yet.  More is coming soon.
 
 =head1 LICENSE AND COPYRIGHT
 

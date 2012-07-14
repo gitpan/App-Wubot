@@ -1,12 +1,14 @@
 package App::Wubot::Config;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
+use File::Path;
 use Sys::Hostname qw();
 use YAML::XS;
 
 use App::Wubot::Logger;
+use App::Wubot::Wubotrc;
 
 has 'hostname' => ( is => 'ro',
                     isa => 'Str',
@@ -20,13 +22,26 @@ has 'hostname' => ( is => 'ro',
 
 has 'root'   => ( is      => 'ro',
                   isa     => 'Str',
-                  required => 1,
+                  lazy    => 1,
+                  default => sub {
+                      my $self = shift;
+                      return $self->wubotrc->get_config( "config_home" );
+                  },
               );
 
 has 'config' => ( is      => 'ro',
                   isa     => 'HashRef',
+                  lazy    => 1,
                   default => sub { $_[0]->read_config() },
               );
+
+has 'wubotrc'      => ( is => 'ro',
+                          isa => 'App::Wubot::Wubotrc',
+                          lazy => 1,
+                          default => sub {
+                              App::Wubot::Wubotrc->new();
+                          },
+                      );
 
 has 'logger'  => ( is => 'ro',
                    isa => 'Log::Log4perl::Logger',
@@ -164,7 +179,7 @@ App::Wubot::Config - read wubot plugin configuration
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 
@@ -214,5 +229,10 @@ the current machine.
 
 Given a plugin key and a config param, return the configuration for
 that plugin instance.
+
+=item get_wubotrc()
+
+Read user configuration from ~/.wubotrc.  Values not defined in
+~/.wubotrc will be set to their default values.
 
 =back

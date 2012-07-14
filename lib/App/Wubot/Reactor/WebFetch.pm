@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::WebFetch;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::Util::WebFetcher;
@@ -52,7 +52,7 @@ sub react {
         1;
     } or do {                       # catch
         my $error = $@;
-        $self->logger->error( $self->key . ": Request failure: $error" );
+        $self->logger->error( "WebFetch reactor: Request failure: $url: $error" );
         return $message;
     };
 
@@ -83,7 +83,7 @@ App::Wubot::Reactor::WebFetch - fetch data from a URL
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

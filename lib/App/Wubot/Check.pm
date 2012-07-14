@@ -1,7 +1,7 @@
 package App::Wubot::Check;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use Benchmark;
 use Class::Load;
@@ -11,6 +11,7 @@ use App::Wubot::Logger;
 use App::Wubot::LocalMessageStore;
 use App::Wubot::Reactor;
 use App::Wubot::SQLite;
+use App::Wubot::Wubotrc;
 
 =head1 NAME
 
@@ -19,7 +20,7 @@ App::Wubot::Check - perform checks for an instance of a monitor
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 
@@ -66,8 +67,16 @@ has 'instance'          => ( is      => 'ro',
 
 has 'cache_file'        => ( is => 'ro',
                              isa => 'Str',
-                             required => 1,
+                             lazy => 1,
+                             default => sub {
+                                 my ( $self ) = @_;
+                                 return join( "/",
+                                              $self->wubotrc->get_config( 'cache_home' ),
+                                              $self->key . ".yaml"
+                                          );
+                             },
                          );
+
 
 has 'logger'            => ( is => 'ro',
                              isa => 'Log::Log4perl::Logger',
@@ -78,7 +87,7 @@ has 'logger'            => ( is => 'ro',
                          );
 
 has 'reactor_queue'     => ( is => 'ro',
-                             isa => 'App::Wubot::LocalMessageStore',
+                             isa => 'Maybe[App::Wubot::LocalMessageStore]',
                              lazy => 1,
                              default => sub {
                                  return App::Wubot::LocalMessageStore->new();
@@ -88,7 +97,8 @@ has 'reactor_queue'     => ( is => 'ro',
 has 'reactor_queue_dir' => ( is => 'ro',
                              isa => 'Str',
                              default => sub {
-                                 return join( "/", $ENV{HOME}, "wubot", "reactor" );
+                                 my $self = shift;
+                                 $self->wubotrc->get_config( 'reactor_queue' ),
                              },
                          );
 
@@ -112,6 +122,14 @@ has 'wubot_reactor'     => ( is => 'ro',
                                  App::Wubot::Reactor->new();
                              },
                          );
+
+has 'wubotrc'      => ( is => 'ro',
+                          isa => 'App::Wubot::Wubotrc',
+                          lazy => 1,
+                          default => sub {
+                              App::Wubot::Wubotrc->new();
+                          },
+                      );
 
 
 =head1 SUBROUTINES/METHODS
@@ -357,7 +375,9 @@ sub enqueue_results {
         $results->{key}        = $self->key;
     }
 
-    $self->reactor_queue->store( $results, $self->reactor_queue_dir );
+    if ( $self->reactor_queue ) {
+        $self->reactor_queue->store( $results, $self->reactor_queue_dir );
+    }
 
 }
 

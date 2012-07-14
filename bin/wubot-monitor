@@ -1,7 +1,9 @@
 #!/usr/local/bin/perl -w
 use strict;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
+
+$0 = "wubot-monitor";
 
 use AnyEvent::Watchdog autorestart => 1, heartbeat => 300;
 
@@ -9,11 +11,11 @@ $| = 1;
 
 use AnyEvent;
 use AnyEvent::Watchdog::Util;
+use Date::Manip;
 use File::Path;
 use FindBin;
 use Getopt::Long;
 use Log::Log4perl qw(:easy);
-use POSIX qw(strftime);
 use YAML::XS;
 
 use lib "$FindBin::Bin/../lib";
@@ -25,115 +27,102 @@ use App::Wubot::Check;
 use App::Wubot::Config;
 use App::Wubot::LocalMessageStore;
 use App::Wubot::Util::TimeLength;
+use App::Wubot::Wubotrc;
 use App::Wubot::WubotX;
+
+my $wubotrc = App::Wubot::Wubotrc->new();
 
 # load plugin library paths
 my $wubotx = App::Wubot::WubotX->new();
 $wubotx->get_plugins();
 
-my $cache_directory = "$ENV{HOME}/wubot/cache";
-unless ( -d $cache_directory ) {
-    mkpath( $cache_directory );
-}
-
-my $config_directory = "$ENV{HOME}/wubot/config";
-unless ( -d $config_directory ) {
-    mkpath( $config_directory );
-}
-
 our $plugin_objs;
 my $schedule;
 
-my $config  = App::Wubot::Config->new( { root => $config_directory } );
+my $config  = App::Wubot::Config->new();
 
 my $reactor = App::Wubot::Reactor->new();
 
 my $timelength = App::Wubot::Util::TimeLength->new();
 
+use App::Wubot::Scheduler;
+my $scheduler = App::Wubot::Scheduler->new();
+
 # all the plugins share a message store object rather than letting
 # each create their own
 my $message_store = App::Wubot::LocalMessageStore->new();
 
-my $count;
+my $end = AnyEvent->condvar;
 
+my $now = time;
+
+my $checks;
+my $check_sub = sub {
+    my $plugin = shift;
+
+    $checks++;
+
+    my $plugin_config = $config->get_plugin_config( $plugin );
+
+    my $results = $plugin_objs->{$plugin}->check( $plugin_config );
+
+    my $delay = $plugin_config->{delay} || 60;
+    if ( ref $results eq "HASH" && $results->{delay} ) {
+        unless ( $delay == $results->{delay} ) {
+            $logger->debug( "Check $plugin rescheduled itself in $results->{delay} seconds" );
+            $scheduler->reschedule( $plugin,
+                                    $results->{delay},
+                                );
+        }
+    }
+
+    # if ( $ENV{LIMIT} ) {
+    #     print "CHECKS: $checks\n";
+    #     if ( $checks > $ENV{LIMIT} ) {
+    #         $end->recv;
+    #         exit;
+    #     }
+    # }
+};
+
+my $count;
 PLUGIN:
 for my $plugin ( $config->get_plugins() ) {
-    create_plugin_instance( $plugin );
+    if ( create_plugin_instance( $plugin, $check_sub ) ) {
+        $count++;
+    }
 }
 
 if ( $count ) {
     $logger->info( "Initialized $count enabled plugin instances" );
 }
 else {
+    my $config_directory = $wubotrc->get_config( 'config_home' );
     $logger->logdie( "ERROR: no plugin config files processed in $config_directory" );
 }
 
-my $start_date = strftime( "%Y-%m-%d", localtime() );
+# restarts daily slightly after midnigh
+my $restart = UnixDate( ParseDate( "tomorrow 00:00:01" ), '%s' ) - UnixDate( ParseDate( "now" ), '%s' );
+my $restart_duration = $timelength->get_human_readable( $restart );
+$logger->error( "Scheduling daily restart in $restart_duration" );
+$scheduler->schedule( 'restart',
+                      sub { $logger->warn( "Restarting now..." );
+                            AnyEvent::Watchdog::Util::restart;
+                        },
+                      $restart
+                  );
 
-$logger->info( "Setting up timer..." );
-my $end = AnyEvent->condvar;
-
-my $loops;
-
-my $timer = AnyEvent->timer( after    => 1,
-                             interval => 5,
-                             cb       => sub {
-
-                                 $loops++;
-
-                                 my $now = time;
-
-                                 for my $time ( sort keys %{ $schedule } ) {
-
-                                     next if $time > $now;
-
-                                     for my $plugin ( @{ $schedule->{$time} } ) {
-
-                                         my $plugin_config = $config->get_plugin_config( $plugin );
-
-                                         my $results = $plugin_objs->{$plugin}->check( $plugin_config );
-
-                                         my $delay = $plugin_config->{delay} || 60;
-
-                                         if ( ref $results eq "HASH" ) {
-                                             if ( $results->{delay} ) {
-                                                 $delay = $results->{delay};
-                                                 $logger->debug( "Check $plugin rescheduled itself in $delay seconds" );
-                                             }
-                                         }
-
-                                         my $next = time + $delay;
-                                         push @{ $schedule->{$next} }, $plugin;
-                                     }
-
-                                     delete $schedule->{$time};
-                                 }
-
-                                 # daily restart
-                                 my $current_date = strftime( "%Y-%m-%d", localtime() );
-                                 unless ( $start_date eq $current_date ) {
-                                     $logger->warn( "Date changed" );
-
-                                     $logger->warn( "Restarting now..." );
-                                     AnyEvent::Watchdog::Util::restart;
-                                 }
-
-                                 if ( $ENV{LIMIT} ) {
-                                     print "LOOPS: $loops\n";
-                                     if ( $loops > $ENV{LIMIT} ) {
-                                         $end->recv;
-                                     }
-                                 }
-
-                             } );
 
 $logger->error( "Running..." );
 $end->recv;
 $logger->error( "Ended..." );
 
 
+
+
+#############################################################################
 sub create_plugin_instance {
-    my ( $plugin ) = @_;
+    my ( $plugin, $cb ) = @_;
 
     $logger->debug( "Creating check instance for plugin: $plugin" );
 
@@ -148,18 +137,17 @@ sub create_plugin_instance {
 
     $plugin_objs->{ $plugin }
         = App::Wubot::Check->new( { class         => $plugin_config->{plugin},
-                                    cache_file    => "$cache_directory/$plugin.yaml",
                                     key           => $plugin,
+                                    wubotrc       => $wubotrc,
                                     reactor_queue => $message_store,
                                     wubot_reactor => $reactor,
                                 } );
 
     $plugin_objs->{ $plugin }->init( $plugin_config );
 
-    my $now        = time;
     my $delay      = $plugin_config->{delay} || 1;
 
-    if ( $delay =~ m|\w| ) {
+    if ( $delay =~ m|[a-zA-Z]| ) {
         $delay = $timelength->get_seconds( $delay );
         $plugin_config->{delay} = $delay;
     }
@@ -185,9 +173,13 @@ sub create_plugin_instance {
     my $diff = $schedule_time - $now;
     $logger->debug( "Scheduling next run of $plugin in $diff seconds" );
 
-    push @{ $schedule->{$schedule_time} }, $plugin;
+    $scheduler->schedule( $plugin,
+                          $cb,
+                          $diff,
+                          $plugin_config->{delay},
+                      );
 
-    $count++;
+    return 1;
 }
 
 __END__
@@ -198,7 +190,7 @@ __END__
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

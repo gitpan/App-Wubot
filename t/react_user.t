@@ -123,6 +123,24 @@ test "parse username field" => sub {
              },
                "Checking 'username (http://...)' style"
            );
+
+    is_deeply( $self->reactor->react( { username => 'xyz@foo.com [xyz@foo.com] on behalf of dude' }, $config ),
+               { username         => 'xyz',
+                 username_domain  => 'foo.com',
+                 username_orig    => 'xyz@foo.com [xyz@foo.com] on behalf of dude',
+                 username_full    => 'xyz@foo.com',
+             },
+               q(Checking 'xyz@foo.com [xyz@foo.com] on behalf of dude')
+           );
+
+    is_deeply( $self->reactor->react( { username => 'xyz [xyz@foo.com] on behalf of dude' }, $config ),
+               { username         => 'xyz',
+                 username_domain  => 'foo.com',
+                 username_orig    => 'xyz [xyz@foo.com] on behalf of dude',
+                 username_full    => 'xyz',
+             },
+               q(Checking 'xyz [xyz@foo.com] on behalf of dude')
+           );
 };
 
 
@@ -291,8 +309,6 @@ test "read changes to contact files" => sub {
 test "read newly added aliases" => sub {
     my ($self) = @_;
 
-    local $TODO = "need to check all files for newly added aliases";
-
     $self->reset_reactor;
 
     my $directory = $self->reactor->directory;
@@ -313,6 +329,8 @@ test "read newly added aliases" => sub {
 
     push @{ $dude->{aliases} }, 'el duderino';
     YAML::XS::DumpFile( "$directory/dude.yaml",  $dude );
+
+    local $TODO = "need to check all files for newly added aliases";
 
     is_deeply( $self->reactor->react( { username => 'el duderino' }, {} ),
                { username       => 'dude',

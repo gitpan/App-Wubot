@@ -1,7 +1,7 @@
 package App::Wubot::Util::Roles::Tables;
 use Moose::Role;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::SQLite;
@@ -13,7 +13,7 @@ App::Wubot::Util::Roles::Tables - under construction
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 
@@ -121,9 +121,16 @@ sub update {
         $self->logger->logdie( "ERROR: can't update without id field: $id_field" );
     }
 
+    # insert or update the row
     $self->sql->insert_or_update( $self->table, $item_h, { $id_field => $item_h->{ $id_field } }, $self->schema );
 
-    return $item_h;
+    # return the new row
+    my @return = $self->sql->select( { tablename => $self->table,
+                                       where     => { $id_field => $item_h->{ $id_field } },
+                                       schema    => $self->schema,
+                                   } );
+
+    return $return[0];
 }
 
 

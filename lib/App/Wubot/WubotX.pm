@@ -1,35 +1,47 @@
 package App::Wubot::WubotX;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use YAML::XS;
 
 use App::Wubot::Logger;
+use App::Wubot::Wubotrc;
 
-has 'root' => ( is => 'ro',
-                isa => 'Str',
-                lazy => 1,
-                default => sub {
-                    return join( "/", $ENV{HOME}, "wubot", "WubotX" );
-                },
-            );
+has 'root'      => ( is      => 'ro',
+                     isa     => 'Str',
+                     lazy    => 1,
+                     default => sub {
+                         my $self = shift;
+                         return $self->wubotrc->get_config( 'wubotx_home' );
+                     },
+                 );
 
-has 'plugins' => ( is => 'ro',
-                   isa => 'ArrayRef[Str]',
-                   lazy => 1,
-                   default => sub {
-                       return $_[0]->get_plugins();
-                   },
-               );
+has 'plugins'   => ( is      => 'ro',
+                     isa     => 'ArrayRef[Str]',
+                     lazy    => 1,
+                     default => sub {
+                         return [ $_[0]->get_plugins() ];
+                     },
+                 );
 
-has 'logger'  => ( is => 'ro',
-                   isa => 'Log::Log4perl::Logger',
-                   lazy => 1,
-                   default => sub {
-                       return Log::Log4perl::get_logger( __PACKAGE__ );
-                   },
-               );
+has 'wubotrc'   => ( is      => 'ro',
+                     isa     => 'App::Wubot::Wubotrc',
+                     lazy    => 1,
+                     default => sub {
+                         App::Wubot::Wubotrc->new();
+                     },
+                 );
+
+has 'logger'    => ( is      => 'ro',
+                     isa     => 'Log::Log4perl::Logger',
+                     lazy    => 1,
+                     default => sub {
+                         return Log::Log4perl::get_logger( __PACKAGE__ );
+                     },
+                 );
+
+
 
 =head1 NAME
 
@@ -38,7 +50,7 @@ App::Wubot::WubotX - WubotX extensions manager
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 
@@ -66,6 +78,8 @@ that are found are added to @INC.
 sub get_plugins {
     my ( $self ) = @_;
 
+    $self->logger->warn( "Loading WubotX plugins..." );
+
     my @plugins;
 
     my $directory = $self->root;
@@ -78,7 +92,7 @@ sub get_plugins {
 
         my $plugin_path = join( "/", $directory, $entry );
         if ( -d $plugin_path ) {
-            $self->logger->warn( "WubotX: loading: $entry" );
+            $self->logger->info( "WubotX: loading: $entry" );
             push @plugins, $entry;
         }
 
@@ -91,7 +105,7 @@ sub get_plugins {
 
     closedir( $dir_h );
 
-    return \@plugins;
+    return @plugins;
 }
 
 
@@ -108,7 +122,11 @@ sub get_webui {
 
     for my $plugin ( @{ $self->plugins } ) {
 
-        my $path = join( "/", $self->root, $plugin, "webui.yaml" );
+        my $path = join( "/",
+                         $self->root,
+                         $plugin,
+                         "webui.yaml"
+                     );
 
         next unless -r $path;
 

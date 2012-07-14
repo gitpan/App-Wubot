@@ -1,7 +1,7 @@
 package App::Wubot;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 #_* Libraries
 
@@ -16,7 +16,7 @@ App::Wubot - personal distributed reactive automation
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 DESCRIPTION
 

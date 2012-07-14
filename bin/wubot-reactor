@@ -1,7 +1,9 @@
 #!/usr/local/bin/perl -w
 use strict;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
+
+$0 = "wubot-reactor";
 
 use AnyEvent::Watchdog autorestart => 1, heartbeat => 300;
 
@@ -19,17 +21,19 @@ use lib "$FindBin::Bin/../lib";
 use App::Wubot::Logger;
 my $logger = Log::Log4perl::get_logger( 'default' );
 
-use App::Wubot::Config;
 use App::Wubot::Reactor;
 use App::Wubot::LocalMessageStore;
 use App::Wubot::Util::TimeLength;
+use App::Wubot::Wubotrc;
 use App::Wubot::WubotX;
+
+my $wubotrc = App::Wubot::Wubotrc->new();
 
 # load plugin library paths
 my $wubotx = App::Wubot::WubotX->new();
 $wubotx->get_plugins();
 
-my $message_directory = "$ENV{HOME}/wubot/reactor";
+my $message_directory = $wubotrc->get_config( 'reactor_queue' );
 
 # vacuuming of the reactor queue is done by the monitor, don't
 # duplicate that here or both processes may end up doing it at the
@@ -40,7 +44,7 @@ my $messenger = App::Wubot::LocalMessageStore->new( { novacuum => 1 } );
 my $hostname = Sys::Hostname::hostname();
 $hostname =~ s|\..*$||;
 
-my $reactor_config = "$ENV{HOME}/wubot/config/reactor.yaml.$hostname";
+my $reactor_config = $wubotrc->get_config( 'reactor_config' );
 $logger->info( "loading reactor config: $reactor_config" );
 my $config = YAML::XS::LoadFile( $reactor_config );
 
@@ -65,7 +69,7 @@ my @timers;
 my $total_count = 0;
 
 push @timers, AnyEvent->timer( after    => 1,
-                               interval => 5,
+                               interval => 1,
                                cb       => sub {
 
                                    my $count = 0;
@@ -189,7 +193,7 @@ __END__
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

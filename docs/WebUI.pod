@@ -4,32 +4,31 @@ App::Wubot::Guide::WebUI - guide for using the wubot web interface
 
 =head1 DESCRIPTION
 
-The web interface was recently changed from using L<Mojolicious::Lite>
-to L<Mojolicious>.  So the instructions for starting up the webui have
-changed.
+The web interface is still experimental and is frequently changing!
 
-The recommended method for using the web ui is to clone the wubot git
+Recently the web ui has been moved out of wubot core and into the
+WubotX project.
+
+The recommended method for using the web ui is to clone the WubotX git
 repository and run the web ui from there.
 
-  cpan Dist::Zilla
-  git clone git://github.com/wu/wubot.git
-  cd wubot
-  dzil authordeps | xargs cpan
-  dzil listdeps | xargs cpan
-  cp config/webui.yaml ~/wubot/config/
+  mkdir ~/wubot
+  cd ~/wubot
+  git clone git://github.com/wu/WubotX.git
+  cd WubotX/webui
+  cp conf/webui.yaml ~/wubot/config/
   bin/wubot-webui daemon
+
+This assumes that you have already installed App::Wubot.
 
 If you do not have git installed, you can also download and expand the
 tarball from github rather than using the 'git clone' command above.
 
 =head1 SEE ALSO
 
-  L<App::Wubot::Web::Rss> - stable
+A number of the WubotX extensions have web interfaces.
 
-  L<App::Wubot::Web::Notify> - under heavy construction
+  https://github.com/wu/WubotX
 
-  L<App::Wubot::Web::Tasks> - alpha
-
-  L<App::Wubot::Web::Tv> - beta
-
-  L<App::Wubot::Web::Graphs> - stable
+The WubotX extensions are still under development, and should
+eventually be available as separate CPAN modules.

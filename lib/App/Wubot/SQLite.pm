@@ -1,13 +1,14 @@
 package App::Wubot::SQLite;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use Capture::Tiny;
 use DBI;
 use DBD::SQLite;
 use Devel::StackTrace;
 use FindBin;
+use POSIX qw(strftime);
 use SQL::Abstract;
 use YAML::XS;
 
@@ -20,7 +21,7 @@ App::Wubot::SQLite - the wubot library for working with SQLite
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 
@@ -149,7 +150,9 @@ has 'logger'  => ( is => 'ro',
                    },
                );
 
-
+my $special_schema_keys = { constraints => 1,
+                            indexes     => 1,
+                        };
 
 =head1 SUBROUTINES/METHODS
 
@@ -178,7 +181,7 @@ sub create_table {
 
     my @lines;
     for my $key ( keys %{ $schema } ) {
-        next if $key eq "constraints";
+        next if $special_schema_keys->{ $key };
         my $type = $schema->{$key};
         push @lines, "\t$key $type";
     }
@@ -195,6 +198,40 @@ sub create_table {
     $self->logger->trace( $command );
 
     $self->dbh->do( $command );
+
+    if ( $schema->{indexes} ) {
+        $self->add_indexes( $table, $schema->{indexes} );
+    }
+
+    return 1;
+}
+
+=item add_indexes( $table, $indexes_a )
+
+Create indexes.
+
+=cut
+
+sub add_indexes {
+    my ( $self, $table, $indexes_a ) = @_;
+
+    for my $columns ( @{ $indexes_a } ) {
+
+        my $index_name = lc( join( "_", $table, split( /\s*,\s*/, $columns ) ) );
+        $index_name =~ s|\s+||g;
+        $self->logger->info( "creating table index: $index_name" );
+
+        eval {
+            my $cmd = "CREATE INDEX $index_name ON $table( $columns )";
+            $self->logger->info( $cmd );
+            $self->dbh->do( $cmd );
+            1;
+        } or do {
+            $self->logger->info( "ERROR: failed to create index $index_name: $@" );
+        }
+    }
+
+    return 1;
 }
 
 =item get_tables()
@@ -301,7 +338,7 @@ sub insert {
 
     my $insert;
     for my $field ( keys %{ $schema } ) {
-        next if $field eq "constraints";
+        next if $special_schema_keys->{ $field };
         next if $field eq "id" && $schema->{id} && $schema->{id} =~ m|AUTOINCREMENT|;
         $insert->{ $field } = $entry->{ $field };
     }
@@ -354,7 +391,7 @@ sub update {
 
     my $insert;
     for my $field ( keys %{ $schema } ) {
-        next if $field eq "constraints";
+        next if $special_schema_keys->{ $field };
         next if $field eq "id" && $schema->{id} && $schema->{id} =~ m|AUTOINCREMENT|;
         next unless exists $update->{ $field };
         $insert->{ $field } = $update->{ $field };
@@ -407,8 +444,6 @@ sub insert_or_update {
 
     $self->logger->debug( "inserting into $table" );
     return $self->insert( $table, $update, $schema );
-
-    return 1;
 }
 
 =item select( $options_h )
@@ -470,7 +505,7 @@ sub select {
         $statement .= " LIMIT $1";
     }
 
-    #$self->logger->debug( "SQLITE: $statement", YAML::XS::Dump @bind );
+    #$self->logger->warn( "SQLITE: $statement", YAML::XS::Dump @bind );
 
     my $schema = $self->check_schema( $tablename, $options->{schema}, 1 );
 
@@ -643,7 +678,8 @@ sub get_prepared {
                 $self->create_table( $table, $schema );
                 $self->{tables}->{$table} = 1;
                 next RETRY;
-            } elsif ( $error =~ m/(?:has no column named|no such column\:) (\S+)/ ) {
+            }
+            elsif ( $error =~ m/(?:has no column named|no such column\:) (\S+)/ ) {
                 my $column = $1;
 
                 unless ( $column ) { $self->logger->logcroak( "ERROR: failed to capture a column name!"  ) }
@@ -656,7 +692,26 @@ sub get_prepared {
                 } else {
                     $self->logger->logcroak( "Missing column $column not defined in schema for $table" );
                 }
-            } else {
+            }
+            elsif ( $error =~ m/database disk image is malformed/ ) {
+                $self->logger->fatal( "ERROR: $error" );
+
+                $self->disconnect();
+
+                my $file   = $self->file;
+                my $date   = strftime( "%Y-%m-%d.%H.%M.%S", localtime() );
+                my $backup = join( ".", $file, 'malformed', $date );
+
+                $self->logger->error( "backing up db to $backup" );
+                system( "mv", $file, $backup );
+
+                $self->logger->error( "reconnecting..." );
+                $self->reconnect();
+
+                $self->logger->warn( "ok, reconnected, retrying command..." );
+                next RETRY;
+            }
+            else {
                 $self->logger->logcroak( "Unhandled error: $error" );
             }
 
@@ -730,6 +785,25 @@ sub connect {
     return $dbh;
 }
 
+=item reconnect()
+
+Reconnect a database handle that was previously disconnected.
+
+This method calls disconnect() first if the global sql handle for the
+specified sql file has not yet been removed.
+
+=cut
+
+sub reconnect {
+    my ( $self ) = @_;
+
+    if ( $sql_handles{ $self->file } ) {
+        $self->disconnect;
+    }
+
+    $self->dbh( $self->connect );
+}
+
 =item disconnect()
 
 Close the database handle for a database by calling the disconnect()
@@ -741,6 +815,8 @@ sub disconnect {
     my ( $self ) = @_;
 
     $self->dbh->disconnect;
+
+    delete $sql_handles{ $self->file };
 }
 
 =item get_schema( $table, $directory )
@@ -773,7 +849,7 @@ sub get_schema {
     else {
         $schema_file = join( "/", $self->schema_dir, "$table.yaml" );
     }
-    $self->logger->debug( "looking for schema file: $schema_file" );
+    $self->logger->trace( "looking for schema file: $schema_file" );
 
     unless ( -r $schema_file ) {
         $self->logger->debug( "schema file not found: $schema_file" );
@@ -788,7 +864,7 @@ sub get_schema {
         if ( $mtime > $self->schemas->{$table}->{mtime} ) {
 
             # file updated since last load
-            $self->logger->warn( "Re-loading $table schema: $schema_file" );
+            $self->logger->warn( "Loading $table schema: $schema_file" );
             $schema = YAML::XS::LoadFile( $schema_file );
         }
         else {
@@ -807,6 +883,10 @@ sub get_schema {
 
     $self->schemas->{$table}->{table} = $schema;
     $self->schemas->{$table}->{mtime} = $mtime;
+
+    if ( $schema->{indexes} ) {
+        $self->add_indexes( $table, $schema->{indexes} );
+    }
 
     return $schema;
 }

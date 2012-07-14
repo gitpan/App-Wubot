@@ -2,11 +2,11 @@ package App::Wubot::Logger;
 use strict;
 use warnings;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use Log::Log4perl qw(:easy);
 
-use App::Wubot::Logger;
+use App::Wubot::Wubotrc;
 
 =head1 NAME
 
@@ -15,7 +15,7 @@ App::Wubot::Logger - wubot logging library
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 
@@ -56,8 +56,11 @@ which can cause problems with the test harness.
 The wubot-monitor and wubot-reactor processes will automatically have
 all output logged to the log files:
 
-  $HOME/logs/wubot-monitor.log
-  $HOME/logs/wubot-reactor.log
+  $log_directory/wubot-monitor.log
+  $log_directory/wubot-reactor.log
+
+The $log_directory defaults to ~/wubot/logs.  An alternate location
+can be configured in ~/.wubotrc.
 
 Logging will use Log::Dispatch::FileRotate in order to perform nightly
 rotation of the log files.
@@ -65,6 +68,8 @@ rotation of the log files.
 =cut
 
 BEGIN {
+    my $wubotrc = App::Wubot::Wubotrc->new();
+    my $logdir = $wubotrc->get_config( 'log_home' );
 
     my $appender = "Log::Log4perl::Appender::ScreenColoredLevels";
 
@@ -109,7 +114,7 @@ END_SCREEN_CONF
 my $log_conf = <<"END_LOG_CONF";
 
         log4perl.appender.Logfile = Log::Dispatch::FileRotate
-        log4perl.appender.Logfile.filename    = $ENV{HOME}/logs/$log_name.log
+        log4perl.appender.Logfile.filename    = $logdir/$log_name.log
         log4perl.appender.Logfile.max         = 10
         log4perl.appender.Logfile.mode        = append
         log4perl.appender.Logfile.DatePattern = yyyy-MM-dd

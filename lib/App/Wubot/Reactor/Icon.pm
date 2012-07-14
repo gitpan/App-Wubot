@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::Icon;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -110,7 +110,7 @@ App::Wubot::Reactor::Icon - search for an appropriate icon for a message
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

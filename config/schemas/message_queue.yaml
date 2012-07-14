@@ -7,3 +7,5 @@ hostname: VARCHAR(32)
 seen: INTEGER
 lastupdate: INTEGER
 key: VARCHAR(128)
+indexes:
+  - seen

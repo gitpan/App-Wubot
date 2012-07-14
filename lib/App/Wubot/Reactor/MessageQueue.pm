@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::MessageQueue;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use App::Wubot::Logger;
 use App::Wubot::LocalMessageStore;
@@ -43,7 +43,7 @@ App::Wubot::Reactor::MessageQueue - store messages in a App::Wubot::LocalMessage
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 DESCRIPTION
 

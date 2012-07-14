@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::ImageStrip;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use App::Wubot::Logger;
 
@@ -38,7 +38,7 @@ App::Wubot::Reactor::ImageStrip - strip image tags from a field
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

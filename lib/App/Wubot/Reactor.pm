@@ -1,7 +1,7 @@
 package App::Wubot::Reactor;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use Class::Load qw/load_class/;
 use Sys::Hostname qw//;
@@ -16,7 +16,7 @@ App::Wubot::Reactor - runs reactive rules on a message
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 
@@ -315,6 +315,7 @@ sub monitor {
         my @plugins = $self->find_plugins( $self->{config}->{rules} );
 
         for my $plugin ( @plugins ) {
+            $self->logger->info( "Reactor monitor initializing plugin: $plugin" );
             $self->initialize_plugin( $plugin );
         }
 

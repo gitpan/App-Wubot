@@ -171,11 +171,18 @@ test "repeated critical notification suppression" => sub {
     sleep 1;
     my $second = time;
 
-    is_deeply( $self->fixture->react( { key => 'abc', subject => 'foo', status => 'CRITICAL', lastupdate => $second },
-                                      {}
-                                  ),
+    my $results1 = $self->fixture->react( { key => 'abc', subject => 'foo', status => 'CRITICAL', lastupdate => $second },
+                                          {}
+                                      );
+
+    like( $results1->{subject},
+          qr/foo \[2x CRITICAL \(\d+s\)\]/,
+          "Checking subject"
+      );
+
+    delete $results1->{subject};
+    is_deeply( $results1,
                { key            => 'abc',
-                 subject        => 'foo [2x CRITICAL]',
                  status         => 'CRITICAL',
                  lastupdate     => $second,
                  status_since   => $start,
@@ -187,11 +194,20 @@ test "repeated critical notification suppression" => sub {
 
     sleep 1;
     my $third = time;
-    is_deeply( $self->fixture->react( { key => 'abc', subject => 'foo', status => 'CRITICAL', lastupdate => $third },
-                                      {}
-                                  ),
+
+    my $results2 = $self->fixture->react( { key => 'abc', subject => 'foo', status => 'CRITICAL', lastupdate => $third },
+                                          {}
+                                      );
+
+    like( $results2->{subject},
+          qr/foo \[3x CRITICAL \(\d+s\)\]/,
+          "Checking subject"
+      );
+
+    delete $results2->{subject};
+
+    is_deeply( $results2,
                { key            => 'abc',
-                 subject        => 'foo [3x CRITICAL]',
                  status         => 'CRITICAL',
                  lastupdate     => $third,
                  status_since   => $start,

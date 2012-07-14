@@ -1,20 +1,13 @@
 package App::Wubot::Reactor::Status;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use YAML::XS;
 
 use App::Wubot::Logger;
 use App::Wubot::SQLite;
-
-has 'logger'  => ( is => 'ro',
-                   isa => 'Log::Log4perl::Logger',
-                   lazy => 1,
-                   default => sub {
-                       return Log::Log4perl::get_logger( __PACKAGE__ );
-                   },
-               );
+use App::Wubot::Util::TimeLength;
 
 has 'dbfile' => ( is      => 'rw',
                   isa     => 'Str',
@@ -45,6 +38,23 @@ has 'schema'    => ( is => 'ro',
                               };
                      },
                  );
+
+has 'timelength'       => ( is => 'ro',
+                            isa => 'App::Wubot::Util::TimeLength',
+                            lazy => 1,
+                            default => sub {
+                                return App::Wubot::Util::TimeLength->new();
+                            },
+                        );
+
+has 'logger'  => ( is => 'ro',
+                   isa => 'Log::Log4perl::Logger',
+                   lazy => 1,
+                   default => sub {
+                       return Log::Log4perl::get_logger( __PACKAGE__ );
+                   },
+               );
+
 
 my %statuses      = ( OK => 1,
                       WARNING => 1,
@@ -100,7 +110,8 @@ sub react {
      ) {
 
         if ( $self->_is_fibonacci( $message->{status_count} ) ) {
-            $message->{subject} = join( " ", $message->{subject}, "[$message->{status_count}x $message->{status}]" );
+            my $elapsed = $self->timelength->get_human_readable( time - $message->{status_since} );
+            $message->{subject} = join( " ", $message->{subject}, "[$message->{status_count}x $message->{status} ($elapsed)]" );
         }
         else {
             $message->{quiet} = 1;
@@ -151,7 +162,7 @@ App::Wubot::Reactor::Status - keep track of check statuses
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

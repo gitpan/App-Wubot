@@ -149,6 +149,11 @@ ok( my $timelength = App::Wubot::Util::TimeLength->new(),
         "seconds: 1m"
     );
 
+    is( $timelength->get_seconds( '1M1w' ),
+        60*60*24*(30+7),
+        "seconds: 1M1w"
+    );
+
     is( $timelength->get_seconds( '+1m' ),
         60,
         "seconds: +1m"
@@ -159,9 +164,19 @@ ok( my $timelength = App::Wubot::Util::TimeLength->new(),
         "seconds: 1h"
     );
 
+    is( $timelength->get_seconds( '1H' ),
+        60*60,
+        "seconds: 1H"
+    );
+
     is( $timelength->get_seconds( '1h0m' ),
         60*60,
         "seconds: 1h0m"
+    );
+
+    is( $timelength->get_seconds( '1H0M' ),
+        60*60,
+        "seconds: 1H0M"
     );
 
     is( $timelength->get_seconds( '1h00m' ),
@@ -174,9 +189,20 @@ ok( my $timelength = App::Wubot::Util::TimeLength->new(),
         "seconds: 1d"
     );
 
+
+    is( $timelength->get_seconds( '1D' ),
+        60*60*24,
+        "seconds: 1D"
+    );
+
     is( $timelength->get_seconds( '1w' ),
         60*60*24*7,
         "seconds: 1w"
+    );
+
+    is( $timelength->get_seconds( '1W' ),
+        60*60*24*7,
+        "seconds: 1W"
     );
 
     throws_ok( sub { $timelength->get_seconds( '1x' ) },
@@ -264,38 +290,4 @@ ok( my $timelength = App::Wubot::Util::TimeLength->new(),
             "Seconds from 12h 1m"
         );
     }
-}
-
-{
-    # map
-    is( $timelength->_range_map( 10, 0, 100, 0, 1000 ),
-        100,
-        "calling map of 10 from 0..100 to 0..1000"
-    );
-
-    is( $timelength->_range_map( 10, 0, 100, 100, 200 ),
-        110,
-        "calling map of 10 from 0..100 to 100..200"
-    );
-
-    is( $timelength->_range_map( 10, 0, 100, 0, -100 ),
-        -10,
-        "calling map of 10 from 0..100 to 0..-100"
-    );
-
-    is( $timelength->_range_map( 10, 0, 100, 1000, 2000 ),
-        1100,
-        "calling map of 10 from 0..100 to 1000..2000"
-    );
-
-    is( $timelength->_range_map( 10, 0, 100, 10, 20 ),
-        11,
-        "calling map of 10 from 0..100 to 10..20"
-    );
-
-    is( $timelength->_range_map( 20, 10, 110, 40, 50 ),
-        41,
-        "calling map of 20 from 20..110 to 40..50"
-    );
-
 }

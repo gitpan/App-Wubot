@@ -1,7 +1,7 @@
 package App::Wubot::Reactor::User;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 # todo
 #  - App::Wubot::Util::User
@@ -63,13 +63,26 @@ sub react {
         $message->{username_orig} = $message->{username};
     }
 
+    if ( $message->{username} =~ m|^(.*)\s?\[(.*)\].*$| ) {
+
+        $message->{username_full} = $1;
+        $message->{username} = $2;
+
+        $message->{username_full} =~ s|^\s+||;
+        $message->{username_full} =~ s|\s$||;
+
+        $message->{username_full} =~ s|^\"||;
+        $message->{username_full} =~ s|\"$||;
+    }
+
     if ( $message->{username} =~ m|\@| ) {
-        $message->{username} =~ m|^(.*)\@(.*)|;
+        $message->{username} =~ m|^(.*?)\@(.*)|;
 
         $message->{username} = $1;
 
         $message->{username_domain} = $2;
         $message->{username_domain} =~ s|\>$||;
+        $message->{username_domain} =~ s|\s.*$||;
 
         if ( $message->{username} =~ m|^(.*)\s?\<(.*)$| ) {
 
@@ -82,6 +95,7 @@ sub react {
             $message->{username_full} =~ s|^\"||;
             $message->{username_full} =~ s|\"$||;
         }
+
     }
 
     if ( $message->{username} =~ m/\|/ ) {
@@ -93,6 +107,14 @@ sub react {
     if ( $message->{username} =~ m/\{.*/ ) {
         $message->{username} =~ m/^(.*)\{([^\}]+)/;
         $message->{username} = $1;
+        if ( $2 ) {
+            $message->{username_comment} = $2;
+        }
+    }
+
+    if ( $message->{username} =~ m/\[.*/ ) {
+        $message->{username} =~ m/^(.*)\[([^\]]+)/;
+        $message->{username} = $1;
         $message->{username_comment} = $2;
     }
 
@@ -100,6 +122,10 @@ sub react {
         $message->{username} =~ m/^(.*?)\s*\((http[^\)]+)/;
         $message->{username} = $1;
         $message->{username_comment} = $2;
+    }
+
+    if ( $message->{username_domain} ) {
+        $message->{username_domain} =~ s|[\]\}].*$||;
     }
 
     if ( my $userdata = $self->get_user_info( $message->{username} ) ) {
@@ -225,7 +251,7 @@ App::Wubot::Reactor::User - try to identify user from the 'username' field
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

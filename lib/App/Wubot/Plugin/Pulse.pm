@@ -1,7 +1,7 @@
 package App::Wubot::Plugin::Pulse;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
 
 use POSIX qw(strftime);
 
@@ -31,7 +31,7 @@ sub check {
     my $minute = strftime( "%M", localtime( $now ) );
 
     if ( $cache->{lastminute} && $cache->{lastminute} eq $minute ) {
-        $self->logger->info( "Already sent a pulse this minute: $minute" );
+        $self->logger->debug( "Already sent a pulse this minute: $minute" );
         my $delay = $self->_get_delay();
         return { delay => $delay };
     }
@@ -104,7 +104,7 @@ sub _get_delay {
 
     # attempt to sync up pulses with the minute
     my $second = strftime( "%S", localtime() );
-    my $delay = 60 - $second;
+    my $delay = 60 - $second + 1;
 
     return $delay;
 }
@@ -123,7 +123,7 @@ App::Wubot::Plugin::Pulse - send a message once per minute
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 SYNOPSIS
 

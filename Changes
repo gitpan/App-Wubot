@@ -1,5 +1,26 @@
 Revision history for Wubot
 
+0.5.0 2012-07-13 21:28PDT
+
+  - moved wubot web ui out of core and into WubotX
+
+  - added ~/.wubotrc to configure wubot paths
+    - created automatically if it doesn't already exist
+
+  - added indexes to some sql tables
+
+  - increased message queue polling intervals
+    - better performance thanks to indexes
+    - note: please make sure to copy the new wubot schemas into ~/wubot/schemas
+
+  - use AnyEvent timers to schedule checks rather than internal scheduling
+
+  - extract age colors generation into App::Wubot::Util::AgeColor
+    - fully configurable age colors
+
+  - lots of other minor changes, please see history on github
+    - https://github.com/wu/wubot
+
 0.4.2 2012-04-14T23:50PDT
 
   - pulled more plugins out of wubot core and moved into WubotX

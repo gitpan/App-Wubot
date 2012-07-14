@@ -265,7 +265,7 @@ to whitespace!
         - name: notify sql table
           plugin: SQLite
           config:
-            file: /Users/wu/wubot/sqlite/notify.sql
+            file: /Users/your_id/wubot/sqlite/notify.sql
             tablename: notifications
 
 

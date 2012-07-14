@@ -13,6 +13,13 @@ greater get a sticky growl notification.  The filtered feed is then
 stored in a SQLite database and fed back out again to your favorite
 RSS reader.
 
+=head1 INSTALLATION
+
+To install wubot, check the INSTALLATION section of the README file.
+
+The RSS monitor has been moved out of the wubot core and into
+WubotX/rss.  You'll need to get the WubotX plugins from github before
+you can use this recipe.
 
 =head1 RSS Monitor
 
@@ -57,32 +64,33 @@ contains the plugin directory and filename joined with a dash.  The
 full plugin name is available in 'plugin'.  The 'lastupdate' field
 contains the time the message was generated.  These are standard
 message fields which will be set in every message by wubot-monitor.
-The 'subject' field is an optional field that the notification plugins
-make use of.  If the message has a subject, that subject will be sent
-in a notification.
+The 'subject' field is an optional field that may be used by any
+notification reactors you have enabled.
 
-Other fields in the message are initially set by the message plugins
-and vary from plugin to plugin.  For the RSS plugin, the custom fields
-available in this feed are 'body', 'link', and 'title'.  The body has
-no content in this example.
+Other fields that may be set in the message vary from plugin to
+plugin.  The RSS plugin uses the 'body', 'link', and 'title' fields.
+The body has no content in this example (the ~ means undef).
 
 After the monitor runs and successfully delivers it's messages to the
 reactor queue, it will write a cache file here:
 
   ~/wubot/cache/RSS-usgs-m5.yaml
 
-The cache file contains a list of the subjects that have previously
-been seen, so that the next time the monitor runs (15 minutes later
-per the 'delay' config param), it will only send any new items that
-show up in the feed.  If you remove the cache file and restart
-wubot-monitor, it will schedule another immediate check and will
-re-send all the data from the feed.
+The cache file is used by the RSS plugin to store a list of the
+subjects that have previously been seen, so that the next time the
+monitor runs (15 minutes later per the 'delay' config param), it will
+only send any new entries that show up in the feed.  If you remove the
+cache file and restart wubot-monitor, it will schedule another
+immediate check and will re-send all the data from the feed.  If you
+edit the cache file and remove a single entry from the cache, the next
+time the monitor runs, it will re-send the message for that entry.
 
 =head1 Rules
 
 Now that the messages have been delivered to the reactor queue, you
-need a reactor config to determine what action to take when the
-message arrives.
+need to enable some of the reactor plugins, and configure them with
+the actions you want to take when the message arrives.  This is not
+unlike writing rules for a mail client
 
 The reactor is configured with a series of rules.  For a list of the
 properties of a rule, have a peak at L<App::Wubot::Guide::Rules>.  For an

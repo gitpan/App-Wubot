@@ -9,7 +9,6 @@ build_requires:
   Test::Differences: 0
   Test::Exception: 0
   Test::MockObject: 0
-  Test::Mojo: 0
   Test::More: 0.88
   Test::Requires: 0
   Test::Routine: 0
@@ -18,7 +17,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300009, CPAN::Meta::Converter version 2.120630'
+generated_by: 'Dist::Zilla version 4.300014, CPAN::Meta::Converter version 2.120630'
 license: bsd
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -38,30 +37,27 @@ requires:
   Devel::StackTrace: 0
   Digest::MD5: 0
   Fcntl: 0
-  File::Basename: 0
   File::Path: 0
-  File::Spec: 0
   FindBin: 0
+  Getopt::Euclid: 0
   Getopt::Long: 0
   HTML::Strip: 0
   HTTP::Cookies: 0
   HTTP::Message: 0
   LWP::UserAgent: 0
   Log::Log4perl: 0
-  Mojo::Base: 0
   Moose: 0
   Moose::Role: 0
+  Net::Time: 0
   POSIX: 0
   SQL::Abstract: 0
   Scalar::Util: 0
   Sys::Hostname: 0
   Term::ANSIColor: 0
   Text::Template: 0
-  Text::Wrap: 0
-  URI::Find: 0
   YAML::XS: 0
   strict: 0
   warnings: 0
 resources:
   repository: http://github.com/wu/wubot
-version: 0.4.2
+version: 0.5.0

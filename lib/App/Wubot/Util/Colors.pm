@@ -1,7 +1,9 @@
 package App::Wubot::Util::Colors;
 use Moose;
 
-our $VERSION = '0.4.2'; # VERSION
+our $VERSION = '0.5.0'; # VERSION
+
+use App::Wubot::Wubotrc;
 
 # solarized color schema: http://ethanschoonover.com/solarized
 my $pretty_colors = { pink                 => '#660033',
@@ -177,7 +179,8 @@ my $pretty_colors = { pink                 => '#660033',
                   };
 
 # read colors from external config file on startup
-my $colorfile = join( "/", $ENV{HOME}, "wubot", "config", "colors.yaml" );
+my $wubotrc = App::Wubot::Wubotrc->new();
+my $colorfile = $wubotrc->get_config( 'custom_colors' );
 if ( -r $colorfile ) {
     my $custom_colors = YAML::XS::LoadFile( $colorfile );
     for my $color ( keys %{ $custom_colors } ) {
@@ -219,7 +222,7 @@ App::Wubot::Util::Colors - color themes for wubot
 
 =head1 VERSION
 
-version 0.4.2
+version 0.5.0
 
 =head1 DESCRIPTION
 
